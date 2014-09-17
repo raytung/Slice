@@ -136,6 +136,9 @@ INSTALLED_APPS = [
 
     # project
     "Slice",
+    "deal"
+
+
 ]
 
 # A sample logging configuration. The only tangible logging

@@ -66,6 +66,7 @@ Quick Django 101
 urls.py
 =======
 - Takes the input URL and map it to a view (html file)  
+- Maps url using regex.  
 
 templates/    
 ==========
@@ -73,6 +74,6 @@ templates/
 
 ####Basic Commands    
 New project:   `django-admin startproject <project name>`    
-New app:    `dango-admin startapp <app name>`
+New app:    `dango-admin startapp <app name>`    
 Run the server:   `python manage.py runserver`    
 Database synchronization:     `python manage.py syncdb`
