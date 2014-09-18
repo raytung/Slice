@@ -1,0 +1,20 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+
+{% block body %}
+	
+	{% include "deal_nav.html" %}
+
+	<div id="questions">
+	{%if questions%}
+		<ul>{%for d in deals%}
+			<li>{{d.title}}</li>
+			{%endfor%}
+		</ul>
+	{%else%}
+		<p>No deals have been defined</p>
+	{%endif%}
+	</div>
+{% endblock %}
+

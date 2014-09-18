@@ -14,7 +14,6 @@ def index(request):
     context = RequestContext(request)
     #boldmessage is same as {{ boldmessage }} in our index.html template
     context_dict = {'boldmessage': "I am bold font from the context",
-                    'navigation': NAVIGATION
                     }
     return render_to_response('deal/deallist.html', context_dict, context)
     

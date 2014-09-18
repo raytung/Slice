@@ -64,9 +64,13 @@ STATIC_ROOT = os.path.join(PACKAGE_ROOT, "site_media", "static")
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = "/site_media/static/"
 
+DEAL_STATIC_PATH = os.path.join(PACKAGE_ROOT, "deal")
+DEAL_CSS_PATH = os.path.join(DEAL_STATIC_PATH, "css")
+
 # Additional locations of static files
 STATICFILES_DIRS = [
     os.path.join(PACKAGE_ROOT, "static"),
+    DEAL_CSS_PATH,
 ]
 
 # List of finder classes that know how to find static files in
@@ -112,9 +116,21 @@ ROOT_URLCONF = "Slice.urls"
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = "Slice.wsgi.application"
 
+#Slice/templates
+MASTER_TEMPLATE_PATH = os.path.join(PROJECT_ROOT, "templates")
+
+#Slice/Slice/templates
+SLICE_TEMPLATE_PATH = os.path.join(PACKAGE_ROOT, "templates")
+
+#Slice/deal/templates
+DEAL_TEMPLATE_PATH = os.path.join(PROJECT_ROOT, "deal")
+
+
 TEMPLATE_DIRS = [
-    os.path.join(PACKAGE_ROOT, "templates"),
+    SLICE_TEMPLATE_PATH,
+    DEAL_TEMPLATE_PATH,
 ]
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
