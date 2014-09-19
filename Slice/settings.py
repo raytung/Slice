@@ -150,6 +150,9 @@ INSTALLED_APPS = [
     "eventlog",
     "metron",
 
+    #for db migration
+    "south",
+
     # project
     "Slice",
     "deal"

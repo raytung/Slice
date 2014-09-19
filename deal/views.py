@@ -13,6 +13,8 @@ from django.views.generic import ListView
 #Pinax 
 from account import urls
 
+from deal.forms import CreateDealForm
+
 def index(request):
     #RequestContext gets the info on user's request
     context = RequestContext(request)
@@ -31,5 +33,6 @@ def create_deal_check_login(request):
         #this is bad practice, but I can't see to resolve it
         return HttpResponseRedirect('/account/login')
     else:
-        return render_to_response('create_deal.html')
+        form = CreateDealForm()
+        return render(request, 'create_deal.html', { 'form': form })
 
