@@ -17,23 +17,28 @@ class BootstrapForm(forms.ModelForm):
 class CreateDealForm(BootstrapForm):
     class Meta:
         model = Deal
-        fields = ['title', 
+        fields = ['title',
+                  'short_desc',
                   'description', 
+                  'category',
                   'cost_per_unit',
                   'num_units',
                   'start_date',
                   'end_date',
-                #  'delivery_method'
-                 # 'min_pledge_amount',
+                  'delivery_method',
+                  'min_pledge_amount',
                   ]
 
         labels = {
+                'short_desc': 'Short description',
+                'num_units': 'Units available',
+                'min_pledge_amount': 'Minimum Pledging Units'
             
         }
 
         #overrides the default charfield for description. Make it a TextArea in HTML as
-        #opposed to <input>
-        widgets = { 
+        #opposed to <input> </input>
+        widgets = {
             'description': forms.Textarea(attrs={
                 'cols':50, 'rows':10,
                 'class':'form-control'

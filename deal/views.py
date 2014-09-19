@@ -33,6 +33,13 @@ def create_deal_check_login(request):
         #this is bad practice, but I can't see to resolve it
         return HttpResponseRedirect('/account/login')
     else:
-        form = CreateDealForm()
+        if request.method == 'POST':
+            form = CreateDealForm(request.POST)
+            if form.is_valid():
+                deal = form.save(commit=False)
+                deal.save()
+                return HttpResponseRedirect('/')
+        else:
+            form = CreateDealForm()
         return render(request, 'create_deal.html', { 'form': form })
 
