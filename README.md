@@ -4,9 +4,8 @@ Bulk Buy
 
 Getting Started:
 
-    cd bulkbuy
+    cd Slice
     pip install -r requirements.txt
-    python manage.py syncdb
     python manage.py runserver
 
 Setup database:    
@@ -19,11 +18,11 @@ Setup database:
 3 - type in    
 
     CREATE DATABASE bulkbuy;    
-    CREATE USER bulkbuy_admin WITH PASSWORD 'elec3609';    
-    GRANT ALL PRIVILEGES ON DATABASE bulkbuy TO bulkbuy_admin;    
+    CREATE USER bulkbuy WITH PASSWORD 'elec3609';    
+    GRANT ALL PRIVILEGES ON DATABASE bulkbuy TO bulkbuy;    
     \q    
 
-4 - go to bulkbuy/ directory    
+4 - go to Slice/ directory    
 
     python manage.py syncdb    
 
