@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+from django.contrib.auth.views import login
 from deal import views
 from django.views.generic import TemplateView
 
@@ -11,5 +12,6 @@ from django.views.generic import TemplateView
 '''
 urlpatterns = patterns('', 
 		# <root domain>/deal/ will map to our index
-        url(r'^$', TemplateView.as_view(template_name="deallist.html")),
+        url(r'^$', TemplateView.as_view(template_name="deal_index.html")),
+        url(r'^create', views.create_deal_check_login),
         )
