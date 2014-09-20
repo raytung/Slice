@@ -1,0 +1,41 @@
+{% extends "profile_base.html" %}
+
+{% block content %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Account Details
+  </div>
+    <div class="panel-body">
+      First name: {% user.first_name %}
+      Last name: {% user.last_name %}
+      Email: {% user.email %}
+      Current Rating: {% profile.rating %}
+    </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Description
+  </div>
+
+  <div class="panel-body">
+    {% profile.description %}
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Contact Information
+  </div>
+
+  <div class="panel-body">
+    Mobile Number: {% profile.mobile_number %}
+    Contact details:
+    {% profile.contact_info %}
+  </div>
+
+</div>
+
+
+
+{% endblock %}

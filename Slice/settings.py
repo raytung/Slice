@@ -155,7 +155,8 @@ INSTALLED_APPS = [
 
     # project
     "Slice",
-    "deal"
+    "deal",
+    "UserProfile",
 
 
 ]
