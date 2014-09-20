@@ -26,26 +26,17 @@ def index(request):
             }
     return render_to_response('deal/deal_index.html', context_dict, context)
 
-
-def check_is_login(request):
+# Create your views here.
+def profile_check_login(request):
     if not request.user.is_authenticated():
         #redirect to login page
         #this is bad practice, but I can't see to resolve it
         return HttpResponseRedirect('/account/login')
 
-
-# Create your views here.
-def profile_check_login(request):
-    check_is_login(request)
-
     user = request.user
-
-    print "user id %d" % user.id
-
     user_account = models.Account.objects.get(user_id=user.id)
 
-    print "user_account id %d" % user_account.id
-    
+
     try:
         profile = Profile.objects.get(account_id=user_account.id)
     except Profile.DoesNotExist:
