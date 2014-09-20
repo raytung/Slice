@@ -17,5 +17,6 @@
 
     {% if user.is_authenticated %}
     <h2> This shows up if user is logged in </h2>
+    <a href="{% url 'profile_index' %}"> Profile </a>
         {% endif %}
 {% endblock %}
