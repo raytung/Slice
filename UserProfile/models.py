@@ -1,6 +1,6 @@
 from django.db      import models
-from account.models import Account
-from deal.models    import Deal
+from account.models import Account #Account table
+from deal.models    import Deal    #Deal table
 
 '''
     Reference: https://docs.djangoproject.com/en/dev/ref/models/fields/
@@ -31,6 +31,9 @@ from deal.models    import Deal
     Field options: https://docs.djangoproject.com/en/1.6/ref/models/fields/
 
 '''
+class ProfileManager(models.Manager):
+    def create_profile(self, account_id):
+        return self.create(account = account_id)
 
 class Profile(models.Model):
     #User Modifiable
@@ -53,8 +56,12 @@ class Profile(models.Model):
 
     #User not modifiable
     consecutive_incorrect_login_counts = models.PositiveIntegerField(default=0)
-    rating = models.IntegerField(null=True)
+    rating = models.IntegerField(default=0)
 
     #Multiplicities
-    account_id = models.OneToOneField(Account, primary_key=True)
-    deals = models.ForeignKey(Deal)
+    account = models.OneToOneField(Account, primary_key=True)
+
+    objects = ProfileManager()
+
+
+

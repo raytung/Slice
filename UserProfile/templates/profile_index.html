@@ -5,13 +5,13 @@
   <div class="panel-heading">
     Account Details
   </div>
-    <div class="panel-body">
-      First name: {% user.first_name %}
-      Last name: {% user.last_name %}
-      Email: {% user.email %}
-      Current Rating: {% profile.rating %}
-    </div>
-</div>
+  <div class="panel-body">
+    <p>First name: {{ user.first_name }}</p>
+    <p>Last name:  {{ user.last_name }}</p>
+    <p>Email:      {{ user.email }}</p>
+    <p>Current Rating: {{ profile.rating }}</p>
+  </div>
+</div> <!-- end panel -->
 
 <div class="panel panel-default">
   <div class="panel-heading">
@@ -19,9 +19,9 @@
   </div>
 
   <div class="panel-body">
-    {% profile.description %}
+    {{ profile.description }}
   </div>
-</div>
+</div> <!-- end panel -->
 
 <div class="panel panel-default">
   <div class="panel-heading">
@@ -29,13 +29,11 @@
   </div>
 
   <div class="panel-body">
-    Mobile Number: {% profile.mobile_number %}
-    Contact details:
-    {% profile.contact_info %}
+    <p>Mobile Number: {{ profile.mobile_number }}</p>
+    <p>Contact details:</p>
+    <p>{{ profile.contact_info }}</p>
   </div>
 
-</div>
-
-
+</div> <!-- end panel -->
 
 {% endblock %}

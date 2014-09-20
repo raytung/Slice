@@ -1,7 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts     import render
+from django.http          import HttpResponse, HttpResponseRedirect
+from django.template      import RequestContext
+from django.shortcuts     import render_to_response
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 
@@ -42,13 +42,15 @@ def profile_check_login(request):
 
     print "user id %d" % user.id
 
-    user_account = models.Account.objects.get(id=user.id)
+    user_account = models.Account.objects.get(user_id=user.id)
 
     print "user_account id %d" % user_account.id
-
-    profile = Profile.objects.get(account_id=user_account.id)
-
-    return render(request, 'profile_index.html', { 'profile':      profile,
-                                                   'user': user
+    
+    try:
+        profile = Profile.objects.get(account_id=user_account.id)
+    except Profile.DoesNotExist:
+        profile = Profile.objects.create_profile(user_account)
+    return render(request, 'profile_index.html', { 'profile': profile,
+                                                   'user':    user
                                                   })
 
