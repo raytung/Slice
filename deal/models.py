@@ -18,7 +18,7 @@ class Deal(models.Model):
 
         call the actual string in python by the method .get_state_display()
     '''
-    STATE_CHOICES = ( 
+    STATE_CHOICES = (
             ('CMNG', 'Coming up'),
             ('STRT', 'Started'),
             ('ENDD', 'Ended'),
@@ -43,7 +43,7 @@ class Deal(models.Model):
 
     delivery_method = models.TextField()
     min_pledge_amount = models.PositiveIntegerField()
-    
+
     #specifies multiplicity
     search_tags = models.ManyToManyField("SearchTag")
 
@@ -51,10 +51,11 @@ class Deal(models.Model):
     time_posted = models.DateTimeField(auto_now=True)
     #owner_id = models.ForeignKey("User")
     last_modified_date = models.DateTimeField(auto_now=True)
-    
+
     def __unicode__(self):
         return self.title
 
+    #overriding the default save method.
     def save(self, *args, **kwargs):
         if self.start_date > timezone.now():
             self.state = "CMNG"
@@ -62,8 +63,9 @@ class Deal(models.Model):
             self.state = "STRT"
         elif self.end_date <= timezone.now():
             self.state = "ENDD"
-        
-        if self.start_date >= self.end_date: # start date cannot be later than end date
+
+        #start date cannot be later than end date. Does not save.
+        if self.start_date >= self.end_date:
             return
 
         super(Deal, self).save(*args, **kwargs)

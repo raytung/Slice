@@ -19,7 +19,7 @@ class CreateDealForm(BootstrapForm):
         model = Deal
         fields = ['title',
                   'short_desc',
-                  'description', 
+                  'description',
                   'category',
                   'cost_per_unit',
                   'num_units',
@@ -33,7 +33,7 @@ class CreateDealForm(BootstrapForm):
                 'short_desc': 'Short description',
                 'num_units': 'Units available',
                 'min_pledge_amount': 'Minimum Pledging Units'
-            
+
         }
 
         #overrides the default charfield for description. Make it a TextArea in HTML as
