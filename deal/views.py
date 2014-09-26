@@ -49,5 +49,5 @@ def create_deal_check_login(request):
     else:
         form = CreateDealForm()
     return render(request, 'create_deal.html', { 'form': form,
-                                                 'requst': request })
+                                                 'request': request })
 

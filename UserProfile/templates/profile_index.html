@@ -1,16 +1,26 @@
 {% extends "profile_base.html" %}
+{% load static %}
 
 {% block content %}
-<div class="panel panel-default">
+
+<div class="panel panel-default" id="account-details">
   <div class="panel-heading">
     Account Details
+    <a href="{% url 'profile_edit'%}" id="edit-account">
+      <span class="glyphicon glyphicon-pencil">
+      </span>
+    </a>
   </div>
-  <div class="panel-body">
+  <div class="panel-body" id="account-body">
     <p>Username:   {{ user.username }}</p>
     <p>First name: {{ user.first_name }}</p>
     <p>Last name:  {{ user.last_name }}</p>
     <p>Email:      {{ user.email }}</p>
     <p>Current Rating: {{ profile.rating }}</p>
+
+  </div>
+
+  <div class="panel-body" id="account-edit">
   </div>
 </div> <!-- end panel -->
 

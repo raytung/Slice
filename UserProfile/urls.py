@@ -5,4 +5,5 @@ from django.views.generic import TemplateView
 urlpatterns = patterns('',
 		# <root domain>/deal/ will map to our index
         url(r'^$', views.profile_check_login, name="profile_index"),
+        url(r'^edit/', views.edit_profile, name="profile_edit"),
 )

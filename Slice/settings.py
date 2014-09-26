@@ -67,10 +67,14 @@ STATIC_URL = "/site_media/static/"
 DEAL_STATIC_PATH = os.path.join(PACKAGE_ROOT, "deal")
 DEAL_CSS_PATH = os.path.join(DEAL_STATIC_PATH, "css")
 
+USERPROFILE_STATIC_PATH = os.path.join(PACKAGE_ROOT, "UserProfile")
+USERPROFILE_JS_PATH = os.path.join(USERPROFILE_STATIC_PATH, "js")
+
 # Additional locations of static files
 STATICFILES_DIRS = [
     os.path.join(PACKAGE_ROOT, "static"),
     DEAL_CSS_PATH,
+    USERPROFILE_JS_PATH,
 ]
 
 # List of finder classes that know how to find static files in

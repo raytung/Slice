@@ -1,20 +1,17 @@
-#Django libraries
 from django import forms
 from django.core.exceptions import ValidationError
 
-#self defined
-from deal.models import Deal
 
-#this class sets the class of every widgets into 'form-control'.
-#for bootstap styling
-class BootstrapForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(BootstrapForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+#self defined
+from Slice.forms import BootstrapForm
+from deal.models import Deal
 
 #inherit Bootstrapform
 class CreateDealForm(BootstrapForm):
+
+    '''
+        Defines the Meta data of your form here. (See your models.py)
+    '''
     class Meta:
         model = Deal
         fields = ['title',
@@ -29,6 +26,9 @@ class CreateDealForm(BootstrapForm):
                   'min_pledge_amount',
                   ]
 
+        # If you want to override the default label names
+        # e.g 'short_desc' is going to be rendered as "Short desc"
+        # if you don't override it
         labels = {
                 'short_desc': 'Short description',
                 'num_units': 'Units available',
