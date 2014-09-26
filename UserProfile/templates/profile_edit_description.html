@@ -5,12 +5,12 @@
 
 <div class="panel panel-default" id="account-details">
   <div class="panel-heading">
-    Account Details
+    Description
   </div>
   <div class="panel-body" id="account-body">
-    <form role="form" method="post" action="{% url 'profile_edit' %}">
+    <form role="form" method="post" action="{% url 'profile_edit_description' %}">
       {% csrf_token %}
-      {{edit_form.as_p}}
+      {{edit_form.description}}
       <a href="{% url 'profile_index'%}"
         <button class="btn btn-default">Cancel</button>
         </a>

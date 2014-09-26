@@ -14,7 +14,7 @@ from django.views.generic import ListView
 from account import urls, models
 
 from UserProfile.models import Profile
-from UserProfile.forms import EditAccountForm
+from UserProfile.forms import EditAccountForm, EditDescriptionForm, EditContactForm
 
 def index(request):
     #RequestContext gets the info on user's request
@@ -37,6 +37,19 @@ def profile_check_login(request):
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
 
+    profile = Profile.objects.get(account_id=user_account.id)
+    return render(request, 'profile_index.html', { 'profile': profile,
+                                                   'user':    user,
+                                                  })
+def edit_profile(request):
+    if not request.user.is_authenticated():
+        #redirect to login page
+        #this is bad practice, but I can't see to resolve it
+        return HttpResponseRedirect('/account/login')
+
+    user = request.user
+    user_account = models.Account.objects.get(user_id=user.id)
+
     if request.method == 'POST':
         form = EditAccountForm(request.POST, instance=user)
         if form.is_valid():
@@ -50,11 +63,12 @@ def profile_check_login(request):
             #after you saved, try refreshing the page.
             return redirect('profile_index')
 
-    profile = Profile.objects.get(account_id=user_account.id)
-    return render(request, 'profile_index.html', { 'profile': profile,
-                                                   'user':    user,
-                                                  })
-def edit_profile(request):
+    form = EditAccountForm(initial={'first_name': user.first_name,
+                                    'last_name': user.last_name})
+
+    return render(request, 'profile_edit.html', {'edit_form': form })
+
+def edit_description(request):
     if not request.user.is_authenticated():
         #redirect to login page
         #this is bad practice, but I can't see to resolve it
@@ -62,8 +76,50 @@ def edit_profile(request):
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
-    form = EditAccountForm()
+    user_profile = Profile.objects.get(account_id=user_account.id)
 
-    return render(request, 'profile_edit.html', {'edit_form': form })
+    if request.method == 'POST':
+        form = EditDescriptionForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            acc = form.save(commit=False)
+
+            #telling Django that we're only updating these 2 fields in the model
+            acc.save(update_fields=["description"])
+            #need to redirect so we won't get stuck at POST.
+            #try removing the following line and test out the save function.
+            #after you saved, try refreshing the page.
+            return redirect('profile_index')
+
+    form = EditDescriptionForm(initial={'description': user_profile.description})
+
+    return render(request, 'profile_edit_description.html', {'edit_form': form })
+
+def edit_contact(request):
+    if not request.user.is_authenticated():
+        #redirect to login page
+        #this is bad practice, but I can't see to resolve it
+        return HttpResponseRedirect('/account/login')
+
+    user = request.user
+    user_account = models.Account.objects.get(user_id=user.id)
+    user_profile = Profile.objects.get(account_id=user_account.id)
+
+    if request.method == 'POST':
+        form = EditContactForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            acc = form.save(commit=False)
+
+            #telling Django that we're only updating these 2 fields in the model
+            acc.save(update_fields=["mobile_number",
+                                    "contact_info"])
+            #need to redirect so we won't get stuck at POST.
+            #try removing the following line and test out the save function.
+            #after you saved, try refreshing the page.
+            return redirect('profile_index')
+
+    form = EditContactForm(initial={'mobile_number': user_profile.mobile_number,
+                                    'contact_info': user_profile.contact_info})
+
+    return render(request, 'profile_edit_contact.html', {'edit_form': form })
 
 

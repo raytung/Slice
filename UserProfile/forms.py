@@ -2,6 +2,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import models
+from UserProfile.models import Profile
 
 #self defined
 from deal.forms import BootstrapForm
@@ -12,6 +13,13 @@ class EditAccountForm(BootstrapForm):
         fields =['first_name',
                  'last_name']
         
+class EditDescriptionForm(BootstrapForm):
+	class Meta:
+		model = Profile
+		fields = ['description']
 
-
-
+class EditContactForm(BootstrapForm):
+	class Meta:
+		model = Profile
+		fields = ['mobile_number',
+				  'contact_info']

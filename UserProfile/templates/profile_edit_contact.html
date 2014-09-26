@@ -5,10 +5,10 @@
 
 <div class="panel panel-default" id="account-details">
   <div class="panel-heading">
-    Account Details
+    Edit Contact Information
   </div>
   <div class="panel-body" id="account-body">
-    <form role="form" method="post" action="{% url 'profile_edit' %}">
+    <form role="form" method="post" action="{% url 'profile_edit_contact' %}">
       {% csrf_token %}
       {{edit_form.as_p}}
       <a href="{% url 'profile_index'%}"

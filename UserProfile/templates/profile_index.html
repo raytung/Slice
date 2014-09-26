@@ -27,6 +27,11 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     Description
+    <a href="{% url 'profile_edit_description'%}" id="edit-account">
+      <span class="glyphicon glyphicon-pencil">
+      </span>
+    </a>
+
   </div>
 
   <div class="panel-body">
@@ -37,12 +42,18 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     Contact Information
+   <a href="{% url 'profile_edit_contact'%}" id="edit-account">
+      <span class="glyphicon glyphicon-pencil">
+      </span>
+    </a>
+
+
   </div>
 
   <div class="panel-body">
     <p>Mobile Number: {{ profile.mobile_number }}</p>
     <p>Contact details:</p>
-    <p>{{ profile.contact_info }}</p>
+    <p>{{ profile.contact_info|linebreaks }}</p>
   </div>
 
 </div> <!-- end panel -->
