@@ -4,7 +4,10 @@
 {%block content %}
 <form role="form" method="post" action="{% url 'deal_create' %}">
   {% csrf_token %}
-  {{form | safe}} <!-- renders form with html autoescape off -->
+  {% for field in form %}
+  {{field.label }} <!-- renders form with html autoescape off -->
+  {{field}}
+  {% endfor %}
   {% if request.method != 'POST' %}
     <input type="submit" value="Create!" class="btn btn-default" name="submit-deal" />
   {% endif %}

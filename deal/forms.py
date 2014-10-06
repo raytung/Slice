@@ -20,10 +20,11 @@ class CreateDealForm(BootstrapForm):
                   'category',
                   'cost_per_unit',
                   'num_units',
-                  'start_date',
-                  'end_date',
                   'delivery_method',
                   'min_pledge_amount',
+                  'start_date',
+                  'end_date',
+
                   ]
 
         # If you want to override the default label names

@@ -1,21 +1,21 @@
 {% extends "deal_base.html" %}
 
 {% block content %}
-
-  {% for deal in deals %}
+<h1> Top Deals! </h1>
+{% for deal in deals %}
 <div class="media">
   <a class="pull-left" href="#">
     <img class="media-object" src="/static/images/default.svg" >
-    </a>
-    <div class="media-body">
-      <h4 class="media-heading">{{ deal.title }}</h4>
-      {{ deal.short_desc }}
-      {{ deal.start_date }}
-    </div>
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">{{ deal.title }}</h4>
+    {{ deal.short_desc }}</br>
+    {{ deal.start_date }}
+  </div>
 
 </div>
 
-  {% endfor %}
+{% endfor %}
 <a href="{% url 'deal_create' %}"> Create Deal </a>
 
 {% endblock %}
