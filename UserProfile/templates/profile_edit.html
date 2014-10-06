@@ -1,0 +1,26 @@
+{% extends "profile_base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="panel panel-default" id="account-details">
+  <div class="panel-heading">
+    Account Details
+  </div>
+  <div class="panel-body" id="account-body">
+    <form role="form" method="post" action="{% url 'profile_edit' %}">
+      {% csrf_token %}
+      {{edit_form.as_p}}
+      <a href="{% url 'profile_index'%}"
+        <button class="btn btn-default">Cancel</button>
+        </a>
+      {% if request.method != 'POST'%}
+        <input type="submit" value="Save" class="btn btn-default" name="save-account-details" id="account-save-btn" />
+      {% endif %}
+
+    </form>
+  </div>
+
+  </div> <!-- end panel -->
+
+{% endblock %}
