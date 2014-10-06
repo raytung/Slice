@@ -1,0 +1,14 @@
+{% extends "deal_base.html" %}
+{% load i18n %}
+
+{%block content %}
+<form role="form" method="post" action="{% url 'deal_create' %}">
+  {% csrf_token %}
+  {{form | safe}} <!-- renders form with html autoescape off -->
+  {% if request.method != 'POST' %}
+    <input type="submit" value="Create!" class="btn btn-default" name="submit-deal" />
+  {% endif %}
+</form>
+
+
+{% endblock %}
