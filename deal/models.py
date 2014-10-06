@@ -6,7 +6,7 @@ from django.utils import timezone
 class Deal(models.Model):
     #User modifiable
     title = models.CharField(max_length=128, unique=False)
-    short_desc = models.CharField(max_length=200)
+    short_desc = models.CharField(max_length=200, default="No Description")
     description = models.TextField(max_length=1000)
     cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2)
     num_units = models.PositiveIntegerField()
@@ -36,10 +36,11 @@ class Deal(models.Model):
             ('ENTM', 'Entertainment'),
             ('TOYS', 'Toys and Collectables'),
             ('CLTH', 'Clothes and Fashion'),
-            ('FOOD', 'Food')
+            ('FOOD', 'Food'),
+            ('OTHR', 'Others')
             )
 
-    category = models.CharField(max_length=4, choices=CATEGORIES)
+    category = models.CharField(max_length=4, choices=CATEGORIES, default='OTHR')
 
     delivery_method = models.TextField()
     min_pledge_amount = models.PositiveIntegerField()
