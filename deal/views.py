@@ -22,30 +22,29 @@ def index(request):
     #defines python variables for HTML files.
     #{{boldmessage}} will display "I am bold font from the context"
     #in the HTML
-    context_dict = {'boldmessage': "I am bold font from the context",
-            }
-    return render_to_response('deal/deal_index.html', context_dict, context)
+    context_dict = {'boldmessage': "I am bold font from the context",}
 
+    deals = Deal.objects.all()
+    print deals
 
-def check_is_login(request):
-    if not request.user.is_authenticated():
-        #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+    return render_to_response('deal_index.html', context_dict, context)
+
 
 
 # Create your views here.
 def create_deal_check_login(request):
-    check_is_login(request)
-
+    if not request.user.is_authenticated():
+        #redirect to login page
+       #this is bad practice, but I can't see to resolve it
+       return HttpResponseRedirect('/account/login')
     if request.method == 'POST':
-        form = CreateDealForm(request.POST)
-        if form.is_valid():
-            deal = form.save(commit=False)
-            deal.save()
-            form ="<div class=\"alert alert-success\" role=\"alert\"> You have successfuly made a deal!</div>"
-        else:
-            form = "<div class=\"alert alert-danger\" role=\"alert\"> Something is not right. Please try again later. </div>"
+       form = CreateDealForm(request.POST)
+       if form.is_valid():
+           deal = form.save(commit=False)
+           deal.save()
+           form ="<div class=\"alert alert-success\" role=\"alert\"> You have successfuly made a deal!</div>"
+       else:
+           form = "<div class=\"alert alert-danger\" role=\"alert\"> Something is not right. Please try again later. </div>"
     else:
         form = CreateDealForm()
     return render(request, 'create_deal.html', { 'form': form,

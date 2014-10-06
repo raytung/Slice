@@ -31,7 +31,6 @@ from django.utils import timezone
                         -> Delayed:   The owner has chose to delay the start date
     - category:        The category of each deal.
     - delivery_method: Owner must specific the delivery method for the items
-    - contact_method:  Owner may specify additional contact method
     - min_pledge_amount: The minimum commitment number of units
     - time_posted:     The time the Deal has been posted
     - last_modified_date: The latest modified date of the deal.
@@ -44,32 +43,30 @@ from django.utils import timezone
 
 class Deal(models.Model):
     #User modifiable
-    title         = models.CharField(max_length=128,
-                                     unique=False)
-    short_desc    = models.CharField(max_length=200)
-    description   = models.TextField(max_length=1000)
-    cost_per_unit = models.DecimalField(max_digits=5,
-                                        decimal_places=2)
-    num_units     = models.PositiveIntegerField()
-    start_date    = models.DateTimeField(auto_now=False)
-    end_date      = models.DateTimeField(auto_now=False)
-    '''
-        Specifies the state of each deal.
-        the first element of each tuple is the actual data stored in the database.
+   title = models.CharField(max_length=128, unique=False)
+   short_desc = models.CharField(max_length=200, default="No Description")
+   description = models.TextField(max_length=1000)
+   cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2)
+   num_units = models.PositiveIntegerField()
+   start_date = models.DateTimeField(auto_now=False)
+   end_date = models.DateTimeField(auto_now=False)
+   '''
+       Specifies the state of each deal.
+       the first element of each tuple is the actual data stored in the database.
 
-        call the actual string in python by the method .get_state_display()
-    '''
-    STATE_CHOICES = (
+       call the actual string in python by the method .get_state_display()
+   '''
+   STATE_CHOICES = (
             ('CMNG', 'Coming up'),
             ('STRT', 'Started'),
             ('ENDD', 'Ended'),
             ('CNCL', 'Canceled'),
             ('DLYD', 'Delayed')
             )
-    state = models.CharField(max_length=4,
-                             choices=STATE_CHOICES)
+   state = models.CharField(max_length=4,
+            choices=STATE_CHOICES)
 
-    CATEGORIES = (
+   CATEGORIES = (
             ('ARTT', 'Art'),
             ('BABY', 'Baby Products'),
             ('BOOK', 'Books'),
@@ -78,45 +75,44 @@ class Deal(models.Model):
             ('ENTM', 'Entertainment'),
             ('TOYS', 'Toys and Collectables'),
             ('CLTH', 'Clothes and Fashion'),
-            ('FOOD', 'Food')
+            ('FOOD', 'Food'),
+            ('OTHR', 'Others')
             )
 
-    category = models.CharField(max_length=4,
-                                choices=CATEGORIES)
+   category = models.CharField(max_length=4, choices=CATEGORIES, default='OTHR')
 
-    delivery_method   = models.TextField()
-    contact_method    = models.TextField()
-    min_pledge_amount = models.PositiveIntegerField()
+   delivery_method   = models.TextField()
+   min_pledge_amount = models.PositiveIntegerField()
 
     #Multiplicities
-    search_tags = models.ManyToManyField("SearchTag")
-    owner = models.ForeignKey("UserProfile.Profile")
+   search_tags = models.ManyToManyField("SearchTag")
+   #owner = models.ForeignKey("UserProfile.Profile")
 
     #User not modifiable
-    time_posted = models.DateTimeField(auto_now=True)
-    last_modified_date = models.DateTimeField(auto_now=True)
+   time_posted = models.DateTimeField(auto_now=True)
+   last_modified_date = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
-        return self.title
+   def __unicode__(self):
+       return self.title
 
     #overriding the default save method.
-    def save(self, *args, **kwargs):
-        if   self.start_date > timezone.now():
-             self.state = "CMNG"
-        elif self.start_date < timezone.now():
-             self.state = "STRT"
-        elif self.end_date <= timezone.now():
-             self.state = "ENDD"
+   def save(self, *args, **kwargs):
+       if   self.start_date > timezone.now():
+           self.state = "CMNG"
+       elif self.start_date < timezone.now():
+           self.state = "STRT"
+       elif self.end_date <= timezone.now():
+           self.state = "ENDD"
 
         #start date cannot be later than end date. Does not save.
-        if self.start_date >= self.end_date:
-            return
+       if self.start_date >= self.end_date:
+           return
 
-        super(Deal, self).save(*args, **kwargs)
+       super(Deal, self).save(*args, **kwargs)
 
 class SearchTag(models.Model):
     tag_name = models.CharField(max_length=20,
-                                unique=True)
+            unique=True)
 
     def __unicode__(self):
         return self.tag_name
