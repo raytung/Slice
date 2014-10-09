@@ -50,11 +50,11 @@ class SearchDealForm(BootstrapForm):
    search = forms.CharField(max_length=100, required=False)
 
    #min_price & max_price are assumed to be min/max price per unit
-   min_price = forms.FloatField(min_value=0.00)
-   max_price = forms.FloatField(min_value=0.00)
+   min_price = forms.FloatField(min_value=0.00, required=False)
+   max_price = forms.FloatField(min_value=0.00, required=False)
 
-   start_date = forms.DateTimeField()
-   end_date = forms.DateTimeField()
-   category = forms.ModelChoiceField(queryset=Category.objects.all())
+   start_date = forms.DateTimeField(required=False)
+   end_date = forms.DateTimeField(required=False)
+   category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False)
 
 
