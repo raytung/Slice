@@ -26,7 +26,22 @@ Setup database:
 
     python manage.py syncdb    
 
-5 - when it asks to create superuser, just type no    
+5 - when it asks to create superuser, just type create one    
+
+6 - go to Slice/ directory    
+
+    python manage.py loaddata deal_category   
+
+This step loads my pre-defined data for deal_category from
+deal/fixture/deal_category.yaml    
+*Note*: If it throws a `no module name yaml` error,  
+
+    sudo pip install yaml    
+
+or If you're on OSX Mavericks
+
+    sudo pip install pyyaml    
+
 
 
 HTML Locations

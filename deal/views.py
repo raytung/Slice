@@ -1,42 +1,40 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import RequestContext
+from django.http      import HttpResponse, HttpResponseRedirect
+from django.template  import RequestContext
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 
 # Create your views here.
-from deal.models import Deal
 from django.views.generic import ListView
 
 
 #Pinax
 from account import urls
 
-from deal.forms import CreateDealForm
+#Self defined
+from deal.forms  import CreateDealForm, SearchDealForm
+from deal.models import Deal
+
 
 def index(request):
-    #RequestContext gets the info on user's request
     context = RequestContext(request)
+    deals = Deal.objects.all().select_related('UserProfile_Profile')
 
-    #defines python variables for HTML files.
-    #{{boldmessage}} will display "I am bold font from the context"
-    #in the HTML
-    context_dict = {'boldmessage': "I am bold font from the context",}
+    context_dict = {'deals': deals,
+                    'search_form': SearchDealForm() }
 
-    deals = Deal.objects.all()
-    print deals
+    #if nothing is entered/ selected, display top 5 deals
+    #else, search.
+
 
     return render_to_response('deal_index.html', context_dict, context)
 
-
-
-# Create your views here.
 def create_deal_check_login(request):
+    #redirect if not logged in
     if not request.user.is_authenticated():
-        #redirect to login page
-       #this is bad practice, but I can't see to resolve it
        return HttpResponseRedirect('/account/login')
+
     if request.method == 'POST':
        form = CreateDealForm(request.POST)
        if form.is_valid():
@@ -47,6 +45,8 @@ def create_deal_check_login(request):
            form = "<div class=\"alert alert-danger\" role=\"alert\"> Something is not right. Please try again later. </div>"
     else:
         form = CreateDealForm()
+        search_form = SearchDealForm()
     return render(request, 'create_deal.html', { 'form': form,
-                                                 'request': request })
+                                                 'request': request,
+                                                 'search_form': search_form})
 

@@ -66,27 +66,13 @@ class Deal(models.Model):
    state = models.CharField(max_length=4,
             choices=STATE_CHOICES)
 
-   CATEGORIES = (
-            ('ARTT', 'Art'),
-            ('BABY', 'Baby Products'),
-            ('BOOK', 'Books'),
-            ('ELEC', 'Electronics and Cameras'),
-            ('COMP', 'Computers'),
-            ('ENTM', 'Entertainment'),
-            ('TOYS', 'Toys and Collectables'),
-            ('CLTH', 'Clothes and Fashion'),
-            ('FOOD', 'Food'),
-            ('OTHR', 'Others')
-            )
-
-   category = models.CharField(max_length=4, choices=CATEGORIES, default='OTHR')
-
    delivery_method   = models.TextField()
    min_pledge_amount = models.PositiveIntegerField()
 
     #Multiplicities
    search_tags = models.ManyToManyField("SearchTag")
-   #owner = models.ForeignKey("UserProfile.Profile")
+   owner = models.ForeignKey("UserProfile.Profile")
+   category = models.ForeignKey('deal.Category')
 
     #User not modifiable
    time_posted = models.DateTimeField(auto_now=True)
@@ -116,5 +102,12 @@ class SearchTag(models.Model):
 
     def __unicode__(self):
         return self.tag_name
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
 
 

@@ -1,0 +1,44 @@
+- model: deal.category
+  pk: 1
+  fields:
+      name: Art
+- model: deal.category
+  pk: 2
+  fields:
+      name: Baby Products
+- model: deal.category
+  pk: 3
+  fields:
+      name: Books
+- model: deal.category
+  pk: 4
+  fields:
+      name: Electronics and Camera
+- model: deal.category
+  pk: 5
+  fields:
+      name: Entertainment
+- model: deal.category
+  pk: 6
+  fields:
+      name: Toys and Collectables
+- model: deal.category
+  pk: 7
+  fields:
+      name: Clothes and Fashion
+- model: deal.category
+  pk: 8
+  fields:
+      name: Food
+- model: deal.category
+  pk: 9
+  fields:
+      name: Others
+
+
+
+
+
+
+
+
