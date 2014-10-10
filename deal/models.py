@@ -2,6 +2,10 @@ from django.db    import models
 from datetime     import datetime
 from django.utils import timezone
 
+# https://docs.djangoproject.com/en/dev/ref/validators/#minvaluevalidator
+from django.core.validators import MinValueValidator
+
+
 # Create your models here.
 
 '''
@@ -46,7 +50,7 @@ class Deal(models.Model):
    title = models.CharField(max_length=128, unique=False)
    short_desc = models.CharField(max_length=200, default="No Description")
    description = models.TextField(max_length=1000)
-   cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2)
+   cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    num_units = models.PositiveIntegerField()
    start_date = models.DateTimeField(auto_now=False)
    end_date = models.DateTimeField(auto_now=False)

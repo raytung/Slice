@@ -18,4 +18,3 @@ def autoload(submodules):
 
 def run():
     autoload(["receivers"])
-    admin.autodiscover()
