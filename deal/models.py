@@ -50,6 +50,8 @@ class Deal(models.Model):
    title = models.CharField(max_length=128, unique=False)
    short_desc = models.CharField(max_length=200, default="No Description")
    description = models.TextField(max_length=1000)
+
+   #decimal field as opposed to floatfield http://stackoverflow.com/questions/2569015/django-floatfield-or-decimalfield-for-currency
    cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    num_units = models.PositiveIntegerField()
    start_date = models.DateTimeField(auto_now=False)

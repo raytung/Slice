@@ -6,6 +6,7 @@
 <div class="container">
 
   <div class="row">
+    <!-- search form -->
     <form role="form" action="{% url 'deals_index' %}" method="get" id="deal-nav" class="form-horizontal col-md-2">
       {% for field in search_form %}
       <div class="form-group">
@@ -15,6 +16,7 @@
       {% endfor %}
       <input type="submit" value="Search" class="btn btn-default" />
     </form>
+    <!-- End search form -->
 
     <div class="col-md-10" id="deal-content">
       {% block content %} <!-- content block -->

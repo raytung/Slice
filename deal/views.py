@@ -64,18 +64,18 @@ def create_deal_check_login(request):
     if not request.user.is_authenticated():
        return HttpResponseRedirect('/account/login')
 
+    success = False
     if request.method == 'POST':
        form = CreateDealForm(request.POST)
        if form.is_valid():
            deal = form.save(commit=False)
            deal.save()
-           form ="<div class=\"alert alert-success\" role=\"alert\"> You have successfuly made a deal!</div>"
+           success = True
        else:
-           form = "<div class=\"alert alert-danger\" role=\"alert\"> Something is not right. Please try again later. </div>"
-    else:
         form = CreateDealForm()
-        search_form = SearchDealForm()
+    search_form = SearchDealForm()
     return render(request, 'create_deal.html', { 'form': form,
                                                  'request': request,
-                                                 'search_form': search_form})
+                                                 'search_form': search_form,
+                                                 'valid_form': success},)
 

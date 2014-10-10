@@ -153,6 +153,7 @@ INSTALLED_APPS = [
     "account",
     "eventlog",
     "metron",
+    "widget_tweaks",
 
     # project
     "Slice",

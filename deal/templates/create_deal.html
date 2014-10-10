@@ -2,13 +2,38 @@
 {% load i18n %}
 
 {%block content %}
-<form role="form" method="post" action="{% url 'deal_create' %}">
-  {% csrf_token %}
-  {{form | safe}} <!-- renders form with html autoescape off -->
-  {% if request.method != 'POST' %}
-    <input type="submit" value="Create!" class="btn btn-default" name="submit-deal" />
-  {% endif %}
-</form>
+  {% if valid_form %}
+    <div class="alert alert-success" role="alert">
+      You have successfuly made a deal!
+    </div>
+    {% else %}
+    {% if form.errors %}
+      <div class="alert alert-danger" role="alert"> 
+        You have errors in your submission. Please make nessecary changes!
+      </div>
+    {% endif %}
+    <form role="form" method="post" action="{% url 'deal_create' %}">
+      {% csrf_token %}
+      {% for field in form %}
+        {% if field.errors %}
+          <div class="form-group has-error has-feedback">
+        {% else %}
+        <div class="form-group">
+          {% endif %}
+          <label >{{ field.label }}</label>
+          {{ field }}
+            {% for error in field.errors%}
+          <span class="help-block">
+            <strong>{{ error|escape }}</strong>
+          </span>
+        {% endfor %}
 
+
+        </div>
+              {% endfor %}
+
+      <input type="submit" value="Create!" class="btn btn-default" name="submit-deal" />
+    </form>
+  {% endif %}
 
 {% endblock %}
