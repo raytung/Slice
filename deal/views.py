@@ -34,7 +34,7 @@ def index(request):
         max_price  = getStringFromInput(form, 'max_price')
         start      = getStringFromInput(form, 'start_date')
         end        = getStringFromInput(form, 'end_date')
-        category   = getStringFromInput(form, 'category')
+        category   = form.cleaned_data['category']
 
         #https://docs.djangoproject.com/en/dev/ref/models/querysets/
         q = Q()
@@ -47,7 +47,7 @@ def index(request):
         if max_price:  q &= Q(cost_per_unit__lte=float(max_price))
         if start:      q &= Q(start_date__gte=start)
         if end:        q &= Q(end_date__lte=end)
-        if category:   q &= Q(category__exact=category)
+        if category:   q &= Q(category_id__exact=category.id)
 
         deals = Deal.objects.filter(q)
 
