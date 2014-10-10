@@ -37,6 +37,14 @@ class CreateDealForm(BootstrapModelForm):
 
         }
 
+        help_texts = {'start_date': 'mm/dd/yyyy',
+                      'end_date': 'mm/dd/yyyy'}
+
+        error_messages = {
+                'start_date':{'invalid': 'Invalid date format. Make sure it is in mm/dd/yyyy'},
+                'end_date'  :{'invalid': 'Invalid date format. Make sure it is in mm/dd/yyyy'}
+                }
+
         #overrides the default charfield for description. Make it a TextArea in HTML as
         #opposed to <input> </input>
         widgets = {

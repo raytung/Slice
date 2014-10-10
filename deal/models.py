@@ -88,6 +88,7 @@ class Deal(models.Model):
        return self.title
 
     #overriding the default save method.
+
    def save(self, *args, **kwargs):
        if   self.start_date > timezone.now():
            self.state = "CMNG"
@@ -100,7 +101,10 @@ class Deal(models.Model):
        if self.start_date >= self.end_date:
            return
 
+
+
        super(Deal, self).save(*args, **kwargs)
+
 
 class SearchTag(models.Model):
     tag_name = models.CharField(max_length=20,

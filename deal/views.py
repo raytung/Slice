@@ -56,7 +56,6 @@ def index(request):
                     'search_form': form }
 
 
-
     return render_to_response('deal_index.html', context_dict, context)
 
 def create_deal_check_login(request):
@@ -65,15 +64,16 @@ def create_deal_check_login(request):
        return HttpResponseRedirect('/account/login')
 
     success = False
+    form = CreateDealForm()
+    search_form = SearchDealForm()
+
     if request.method == 'POST':
        form = CreateDealForm(request.POST)
        if form.is_valid():
            deal = form.save(commit=False)
+           deal.owner_id = request.user.id
            deal.save()
            success = True
-       else:
-        form = CreateDealForm()
-    search_form = SearchDealForm()
     return render(request, 'create_deal.html', { 'form': form,
                                                  'request': request,
                                                  'search_form': search_form,
