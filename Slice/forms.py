@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 #for bootstap styling
 class BootstrapForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
         super(BootstrapForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'

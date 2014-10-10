@@ -22,9 +22,10 @@ def index(request):
     #defines python variables for HTML files.
     #{{boldmessage}} will display "I am bold font from the context"
     #in the HTML
-    context_dict = {'boldmessage': "I am bold font from the context",}
 
-    deals = Deal.objects.all()
+    deals = Deal.objects.all().select_related('UserProfile_Profile')
+
+    context_dict = {'deals': deals}
     print deals
 
     return render_to_response('deal_index.html', context_dict, context)
@@ -41,6 +42,7 @@ def create_deal_check_login(request):
        form = CreateDealForm(request.POST)
        if form.is_valid():
            deal = form.save(commit=False)
+           deal.owner_id = request.user.id
            deal.save()
            form ="<div class=\"alert alert-success\" role=\"alert\"> You have successfuly made a deal!</div>"
        else:
