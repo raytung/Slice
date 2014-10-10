@@ -16,7 +16,8 @@ from deal.forms  import CreateDealForm, SearchDealForm
 from deal.models import Deal
 
 def getStringFromInput(form, s):
-     return form.cleaned_data[s].strip() if form.cleaned_data[s] else None
+    """ Retrieves the string value from the input field in the given form  """
+    return form.cleaned_data[s].strip() if form.cleaned_data[s] else None
 
 def index(request):
     context = RequestContext(request)
@@ -29,8 +30,8 @@ def index(request):
 
     if request.method == 'GET' and form.is_valid():
         search_key = getStringFromInput(form, 'search')
-        min_price  = float(getStringFromInput(form, 'min_price')) if form.cleaned_data['min_price'] != None else None
-        max_price  = float(getStringFromInput(form, 'max_price')) if form.cleaned_data['max_price'] != None else None
+        min_price  = getStringFromInput(form, 'min_price')
+        max_price  = getStringFromInput(form, 'max_price')
         start      = getStringFromInput(form, 'start_date')
         end        = getStringFromInput(form, 'end_date')
         category   = getStringFromInput(form, 'category')
@@ -38,12 +39,12 @@ def index(request):
         #https://docs.djangoproject.com/en/dev/ref/models/querysets/
         q = Q()
         if search_key:
-            q &= Q(title__like=search_key)
-            q &= Q(short_desc__like=search_key)
-            q &= Q(description__like=search_key)
+            q &= Q(title__contains=search_key)
+            q &= Q(short_desc__contains=search_key)
+            q &= Q(description__contains=search_key)
 
-        if min_price:  q &= Q(cost_per_unit__gte=min_price)
-        if max_price:  q &= Q(cost_per_unit__lte=max_price)
+        if min_price:  q &= Q(cost_per_unit__gte=float(min_price))
+        if max_price:  q &= Q(cost_per_unit__lte=float(max_price))
         if start:      q &= Q(start_date__gte=start)
         if end:        q &= Q(end_date__lte=end)
         if category:   q &= Q(category__exact=category)
