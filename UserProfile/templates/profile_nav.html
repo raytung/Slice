@@ -13,7 +13,12 @@
   {% endif %}
   <a href="{% url 'profile_mydeals' %}">My Deals</a></li>
   <li><a href="#">My Slice</a></li>
-  <li><a href="#">Viewing History</a></li>
+  {% if request.path == '/profile/history'%}
+    <li class="active">
+  {% else %}
+    <li>
+  {% endif %}
+  <a href="{% url 'profile_history'%}">Viewing History</a></li>
   <li><a href="#">My Bookmarks</a></li>
   <li><a href="#">My Friends</a></li>
 </ul>

@@ -13,7 +13,7 @@ from django.views.generic import ListView
 #Pinax
 from account import urls, models
 
-from UserProfile.models import Profile
+from UserProfile.models import Profile, History
 from UserProfile.forms import EditAccountForm, EditDescriptionForm, EditContactForm
 from deal.models import Deal
 
@@ -130,3 +130,13 @@ def my_deals(request):
     deals = Deal.objects.filter(owner_id=request.user.id)
 
     return render(request, 'profile_mydeals.html', {'deals': deals})
+
+def history(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/account/login')
+
+    history = Deal.objects.filter(history__user_id=request.user.id)
+
+
+    return render(request, 'profile_history.html', {'deals': history})
+
