@@ -1,0 +1,50 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+
+{% block body %}
+
+<div class="container">
+
+  {% if deal %}
+  <div class="row">
+    <div class="col-md-8" id="deal-content">
+      {% block content %} <!-- content block -->
+
+      <h1> {{deal.title}}  </h1> provided by {{owner.username}}
+
+      <h3> Description </h3>
+      <p> {{deal.description}}  </p>
+
+      <p><strong>Due Date:</strong> {{deal.end_date}} </p>
+      <p><strong>Price:</strong> ${{deal.cost_per_unit}} </p>
+      <p><strong>Units available:</strong> {{deal.num_units}}
+      <p><strong>Delivery method:</strong> {{deal.delivery_method}}</p>
+      <p><strong>Minimum pledge amount:</strong> {{deal.min_pledge_amount}}</p>
+
+
+
+      {% endblock %}
+    </div> <!-- end deal-content -->
+
+    <div class="col-md-4">
+      <div style="width: 100%; height: 15em; background: #000; color: #fff">
+        Images
+      </div>
+      <div style="width: 100%; height: 15em; background: #000; color: #fff; margin-top: 1em;">
+        Images
+      </div>
+    </div>
+  </div> <!-- end row -->
+
+  <div class="row">
+     <h1> Make a Pledge </h1>
+  </div>
+  {% else %}
+
+
+  {% endif %}
+</div> <!-- end container -->
+{% endblock %}
+
+
