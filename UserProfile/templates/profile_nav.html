@@ -1,9 +1,20 @@
 <ul class="nav nav-pills nav-stacked">
-  <li class="active"><a href="{% url 'profile_index' %}">Profile</a></li>
+  {% if request.path == '/profile/' %}
+    <li class="active">
+    {% else %}
+    <li>
+    {% endif %}
+  <a href="{% url 'profile_index' %}">Profile</a></li>
   <li><a href="#">Messages</a></li>
-  <li><a href="#">My Deals</a></li>
+  {% if request.path == '/profile/mydeals' %}
+    <li class="active">
+  {% else %}
+    <li>
+  {% endif %}
+  <a href="{% url 'profile_mydeals' %}">My Deals</a></li>
   <li><a href="#">My Slice</a></li>
   <li><a href="#">Viewing History</a></li>
   <li><a href="#">My Bookmarks</a></li>
   <li><a href="#">My Friends</a></li>
 </ul>
+
