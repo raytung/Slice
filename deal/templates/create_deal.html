@@ -11,7 +11,8 @@
       <div class="alert alert-danger" role="alert"> 
         You have errors in your submission. Please make nessecary changes!
       </div>
-    {% endif %}
+      {% endif %}
+      {% load widget_tweaks%}
     <form role="form" method="post" action="{% url 'deal_create' %}">
       {% csrf_token %}
       {% for field in form %}
@@ -21,7 +22,7 @@
         <div class="form-group">
           {% endif %}
           <label >{{ field.label }}</label>
-          {{ field }}
+          {% render_field field placeholder=field.help_text %}
             {% for error in field.errors%}
           <span class="help-block">
             <strong>{{ error|escape }}</strong>

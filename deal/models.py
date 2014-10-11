@@ -54,8 +54,8 @@ class Deal(models.Model):
    #decimal field as opposed to floatfield http://stackoverflow.com/questions/2569015/django-floatfield-or-decimalfield-for-currency
    cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    num_units = models.PositiveIntegerField()
-   start_date = models.DateTimeField(auto_now=False)
-   end_date = models.DateTimeField(auto_now=False)
+   start_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
+   end_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
    '''
        Specifies the state of each deal.
        the first element of each tuple is the actual data stored in the database.
