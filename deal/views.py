@@ -13,10 +13,11 @@ from django.db.models import Q
 #Pinax
 from account import urls
 
-#Self defined
+#Models
 from deal.forms  import CreateDealForm, SearchDealForm
 from deal.models import Deal
 from django.contrib.auth.models import User
+from UserProfile.models import Profile, History
 
 def getStringFromInput(form, s):
     """ Retrieves the string value from the input field in the given form  """
@@ -26,6 +27,7 @@ def getStringFromInput(form, s):
 def index(request):
     context = RequestContext(request)
     deals = Deal.objects.all().select_related('UserProfile_Profile')
+
 
     form = SearchDealForm(data=request.GET)
 
@@ -84,12 +86,16 @@ def create_deal_check_login(request):
                                                  'valid_form': success},)
 def detail(request, pk):
     try:
-        deal = Deal.objects.get(id=pk)
-        owner = User.objects.get(id=deal.owner_id)
+        found_deal = Deal.objects.get(id=pk)
+        current_viewer = Profile.objects.get(account_id=request.user.id)
+        history = History(user=current_viewer, deal=found_deal)
+        history.save()
+
+        owner = User.objects.get(id=found_deal.owner_id)
     except ObjectDoesNotExist:
-        deal = None
+        found_deal = None
         owner = None
 
-    context_dict = {'deal': deal,
+    context_dict = {'deal': found_deal,
                     'owner': owner,}
     return render(request, 'deal_detail.html', context_dict)
