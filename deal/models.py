@@ -2,6 +2,10 @@ from django.db    import models
 from datetime     import datetime
 from django.utils import timezone
 
+# https://docs.djangoproject.com/en/dev/ref/validators/#minvaluevalidator
+from django.core.validators import MinValueValidator
+
+
 # Create your models here.
 
 '''
@@ -46,7 +50,9 @@ class Deal(models.Model):
    title = models.CharField(max_length=128, unique=False)
    short_desc = models.CharField(max_length=200, default="No Description")
    description = models.TextField(max_length=1000)
-   cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2)
+
+   #decimal field as opposed to floatfield http://stackoverflow.com/questions/2569015/django-floatfield-or-decimalfield-for-currency
+   cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    num_units = models.PositiveIntegerField()
    start_date = models.DateTimeField(auto_now=False)
    end_date = models.DateTimeField(auto_now=False)
@@ -66,27 +72,13 @@ class Deal(models.Model):
    state = models.CharField(max_length=4,
             choices=STATE_CHOICES)
 
-   CATEGORIES = (
-            ('ARTT', 'Art'),
-            ('BABY', 'Baby Products'),
-            ('BOOK', 'Books'),
-            ('ELEC', 'Electronics and Cameras'),
-            ('COMP', 'Computers'),
-            ('ENTM', 'Entertainment'),
-            ('TOYS', 'Toys and Collectables'),
-            ('CLTH', 'Clothes and Fashion'),
-            ('FOOD', 'Food'),
-            ('OTHR', 'Others')
-            )
-
-   category = models.CharField(max_length=4, choices=CATEGORIES, default='OTHR')
-
    delivery_method   = models.TextField()
    min_pledge_amount = models.PositiveIntegerField()
 
     #Multiplicities
    search_tags = models.ManyToManyField("SearchTag")
    owner = models.ForeignKey("UserProfile.Profile")
+   category = models.ForeignKey('deal.Category')
 
     #User not modifiable
    time_posted = models.DateTimeField(auto_now=True)
@@ -120,5 +112,12 @@ class SearchTag(models.Model):
 
     def __unicode__(self):
         return self.tag_name
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
 
 

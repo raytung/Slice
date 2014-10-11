@@ -5,20 +5,20 @@ from django.contrib.auth import models
 from UserProfile.models import Profile
 
 #self defined
-from deal.forms import BootstrapForm
+from deal.forms import BootstrapModelForm
 
-class EditAccountForm(BootstrapForm):
+class EditAccountForm(BootstrapModelForm):
     class Meta:
         model = models.User
         fields =['first_name',
                  'last_name']
         
-class EditDescriptionForm(BootstrapForm):
+class EditDescriptionForm(BootstrapModelForm):
 	class Meta:
 		model = Profile
 		fields = ['description']
 
-class EditContactForm(BootstrapForm):
+class EditContactForm(BootstrapModelForm):
 	class Meta:
 		model = Profile
 		fields = ['mobile_number',

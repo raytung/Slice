@@ -139,7 +139,7 @@ TEMPLATE_DIRS = [
 
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    'django.contrib.admin',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.messages",
@@ -155,9 +155,7 @@ INSTALLED_APPS = [
     "account",
     "eventlog",
     "metron",
-
-    #for db migration
-    "south",
+    "widget_tweaks",
 
     # project
     "Slice",

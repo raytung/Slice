@@ -2,12 +2,13 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 
+
 #self defined
-from Slice.forms import BootstrapForm
-from deal.models import Deal
+from Slice.forms import BootstrapModelForm, BootstrapForm
+from deal.models import Deal, Category
 
 #inherit Bootstrapform
-class CreateDealForm(BootstrapForm):
+class CreateDealForm(BootstrapModelForm):
 
     '''
         Defines the Meta data of your form here. (See your models.py)
@@ -32,9 +33,17 @@ class CreateDealForm(BootstrapForm):
         labels = {
                 'short_desc': 'Short description',
                 'num_units': 'Units available',
-                'min_pledge_amount': 'Minimum Pledging Units'
+                'min_pledge_amount': 'Minimum pledging amount'
 
         }
+
+        help_texts = {'start_date': 'mm/dd/yyyy',
+                      'end_date': 'mm/dd/yyyy'}
+
+        error_messages = {
+                'start_date':{'invalid': 'Invalid date format. Make sure it is in mm/dd/yyyy'},
+                'end_date'  :{'invalid': 'Invalid date format. Make sure it is in mm/dd/yyyy'}
+                }
 
         #overrides the default charfield for description. Make it a TextArea in HTML as
         #opposed to <input> </input>
@@ -44,5 +53,16 @@ class CreateDealForm(BootstrapForm):
                 'class':'form-control'
             }),
         }
+
+class SearchDealForm(BootstrapForm):
+   search = forms.CharField(max_length=100, required=False)
+
+   #min_price & max_price are assumed to be min/max price per unit
+   min_price = forms.FloatField(min_value=0.00, required=False)
+   max_price = forms.FloatField(min_value=0.00, required=False)
+
+   start_date = forms.DateTimeField(required=False)
+   end_date = forms.DateTimeField(required=False)
+   category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False)
 
 

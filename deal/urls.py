@@ -13,6 +13,6 @@ from django.conf.urls.static import static
 '''
 urlpatterns = patterns('',
 		# <root domain>/deal/ will map to our index
-       url(r'^$', views.index, name="deals_index"),
+        url(r'^$', views.index, name="deals_index"),
         url(r'^create', views.create_deal_check_login, name="deal_create"),
         ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
