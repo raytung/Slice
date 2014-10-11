@@ -15,6 +15,7 @@ from account import urls, models
 
 from UserProfile.models import Profile
 from UserProfile.forms import EditAccountForm, EditDescriptionForm, EditContactForm
+from deal.models import Deal
 
 def index(request):
     #RequestContext gets the info on user's request
@@ -122,4 +123,10 @@ def edit_contact(request):
 
     return render(request, 'profile_edit_contact.html', {'edit_form': form })
 
+def my_deals(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/account/login')
 
+    deals = Deal.objects.filter(owner_id=request.user.id)
+
+    return render(request, 'profile_mydeals.html', {'deals': deals})
