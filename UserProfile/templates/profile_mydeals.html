@@ -11,7 +11,8 @@
       <h4 class="media-heading">
         <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
       </h4>
-      {{ deal.short_desc }} <br/>
+      <strong>Created on </strong> {{deal.time_posted}} <br/>
+      <strong>Last Modified: </strong> {{deal.last_modified_date}} <br/>
       Ends on {{ deal.end_date }}
     </div>
 
