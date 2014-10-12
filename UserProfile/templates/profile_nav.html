@@ -27,8 +27,14 @@
     <li>
   {% endif %}
       <a href="{% url 'profile_history'%}">Viewing History</a>
-    </li>
-  <li><a href="#">My Bookmarks</a></li>
+     </li>
+     {% if request.path == '/profile/bookmarks/'%}
+     <li class="active">
+     {% else %}
+     <li>
+     {% endif %}
+      <a href="#">My Bookmarks</a>
+     </li>
   <li><a href="#">My Friends</a></li>
 </ul>
 
