@@ -151,4 +151,8 @@ def bookmarks(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/account/login')
 
-    return render(request, 'profile_bookmarks.html', {})
+    current_viewer = Profile.objects.get(account_id=request.user.id)
+    bookmark = current_viewer.bookmarks.all()
+    return render(request, 'profile_bookmarks.html', {'deals':bookmark})
+
+
