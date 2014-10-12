@@ -161,6 +161,7 @@ INSTALLED_APPS = [
     "Slice",
     "deal",
     "UserProfile",
+    "Pledge",
 
 
 ]
