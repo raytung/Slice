@@ -15,4 +15,4 @@ class Commitment(models.Model):
     last_modified_date = models.DateTimeField(auto_now=False)
 
     def __unicode__(self):
-        return [self.user, self.deal]
+        return str(self.user) + " " +  str(self.deal)
