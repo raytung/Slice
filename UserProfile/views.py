@@ -140,3 +140,9 @@ def history(request):
 
     return render(request, 'profile_history.html', {'deals': history})
 
+def myslice(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/account/login')
+    deals = Deal.objects.filter(commitment__user_id=request.user.id)
+
+    return render(request, 'profile_myslice.html', {'deals': deals})

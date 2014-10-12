@@ -1,0 +1,23 @@
+{% extends 'profile_base.html' %}
+
+{% block content %}
+
+{% for deal in deals %}
+  {% for i in deal.commitment_set.all %}
+<div class="media">
+  <a class="pull-left" href="#">
+    <img class="media-object" src="/static/images/default.svg" >
+    </a>
+    <div class="media-body">
+      <h4 class="media-heading">
+        <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
+      </h4>
+      <strong>Pledged units: </strong>{{ i.units }} <br/>
+      <strong>Your request: </strong>{{i.requests}}
+    </div>
+
+  </div>
+  {% endfor %}
+{% endfor %}
+
+{% endblock %}

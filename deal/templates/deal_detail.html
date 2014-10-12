@@ -18,7 +18,7 @@
 
       <p><strong>Due Date:</strong> {{deal.end_date}} </p>
       <p><strong>Price:</strong> ${{deal.cost_per_unit}} </p>
-      <p><strong>Units available:</strong> {{deal.num_units}}
+      <p><strong>Units left:</strong> {{deal.available_units}}
       <p><strong>Delivery method:</strong> {{deal.delivery_method}}</p>
       <p><strong>Minimum pledge amount:</strong> {{deal.min_pledge_amount}}</p>
 
@@ -38,7 +38,45 @@
   </div> <!-- end row -->
 
   <div class="row">
-     <h1> Make a Pledge </h1>
+    {% if has_pledged %}
+    <div class="alert alert-success" role="alert" style="margin-top: 1em;">
+      You have already pledged towards this deal!
+      </div>
+
+    {% endif %}
+   {% if deal.available_units %}
+ <h1> Make a Pledge </h1> 
+     <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
+       {% csrf_token %}
+       {% for field in pledge_form  %}
+          {% if field.errors %}
+             <div class="form-group has-error has-feedback">
+          {% else %}
+             <div class="form-group">
+          {% endif %}
+       <label> {{field.label}} </label>
+       {{field}}
+       {% for error in field.errors%}
+          <span class="help-block">
+            <strong>{{ error|escape }}</strong>
+          </span>
+       {% endfor %}
+     </div> <!-- end form-group div -->
+     {% endfor %} <!-- end pledge_form for -->
+
+     <input type="submit" value="Cut me a Slice!" class="btn btn-default" name="submit-pledge" />
+
+     </form>
+    {% else %}
+    <div class="alert alert-info" role="alert"> 
+      This deal has no units left! :( <br/>
+      Thank you for your interest!
+    </div>
+
+    {% endif %}
+
+
+
   </div>
   {% else %}
 

@@ -4,22 +4,37 @@
     {% else %}
     <li>
     {% endif %}
-  <a href="{% url 'profile_index' %}">Profile</a></li>
+      <a href="{% url 'profile_index' %}">Profile</a>
+    </li>
   <li><a href="#">Messages</a></li>
-  {% if request.path == '/profile/mydeals' %}
+  {% if request.path == '/profile/mydeals/' %}
     <li class="active">
   {% else %}
     <li>
   {% endif %}
-  <a href="{% url 'profile_mydeals' %}">My Deals</a></li>
-  <li><a href="#">My Slice</a></li>
-  {% if request.path == '/profile/history'%}
+    <a href="{% url 'profile_mydeals' %}">My Deals</a>
+    </li>
+  {% if request.path == '/profile/myslice/'%}
     <li class="active">
   {% else %}
     <li>
   {% endif %}
-  <a href="{% url 'profile_history'%}">Viewing History</a></li>
-  <li><a href="#">My Bookmarks</a></li>
+    <a href="{% url 'profile_myslice' %}">My Slice</a>
+    </li>
+  {% if request.path == '/profile/history/'%}
+    <li class="active">
+  {% else %}
+    <li>
+  {% endif %}
+      <a href="{% url 'profile_history'%}">Viewing History</a>
+     </li>
+     {% if request.path == '/profile/bookmarks/'%}
+     <li class="active">
+     {% else %}
+     <li>
+     {% endif %}
+      <a href="#">My Bookmarks</a>
+     </li>
   <li><a href="#">My Friends</a></li>
 </ul>
 

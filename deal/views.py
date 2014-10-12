@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 #https://docs.djangoproject.com/en/1.7/topics/db/queries/#complex-lookups-with-q-objects
 from django.db.models import Q
@@ -18,6 +19,8 @@ from deal.forms  import CreateDealForm, SearchDealForm
 from deal.models import Deal
 from django.contrib.auth.models import User
 from UserProfile.models import Profile, History
+from Pledge.forms import CommitmentForm
+from Pledge.models import Commitment
 
 def getStringFromInput(form, s):
     """ Retrieves the string value from the input field in the given form  """
@@ -84,12 +87,35 @@ def create_deal_check_login(request):
                                                  'request': request,
                                                  'search_form': search_form,
                                                  'valid_form': success},)
+
+def is_valid_pledge(pledge_form, deal):
+    time_commited = timezone.now()
+    units = pledge_form.cleaned_data['units']
+    return (deal.end_date >= time_commited and \
+        deal.available_units >= units and \
+        deal.min_pledge_amount <= units)
+
+
 def detail(request, pk):
     try:
         found_deal = Deal.objects.get(id=pk)
         current_viewer = Profile.objects.get(account_id=request.user.id)
         history = History(user=current_viewer, deal=found_deal)
         history.save()
+        has_pledged = Commitment.objects.filter(deal_id=pk, user_id=request.user.id)
+
+        pledge_form = CommitmentForm()
+        if request.method == 'POST':
+            pledge_form = CommitmentForm(request.POST)
+            if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
+                pledge = pledge_form.save(commit=False)
+                pledge.last_modified_date= timezone.now()
+                pledge.user = current_viewer
+                pledge.deal = found_deal
+                pledge.save()
+                found_deal.available_units -= pledge.units
+                found_deal.save()
+                has_pledged = Commitment.objects.filter(deal_id=pk, user_id=request.user.id)
 
         owner = User.objects.get(id=found_deal.owner_id)
     except ObjectDoesNotExist:
@@ -97,5 +123,7 @@ def detail(request, pk):
         owner = None
 
     context_dict = {'deal': found_deal,
-                    'owner': owner,}
+                    'owner': owner,
+                    'pledge_form': pledge_form,
+                    'has_pledged': has_pledged,}
     return render(request, 'deal_detail.html', context_dict)
