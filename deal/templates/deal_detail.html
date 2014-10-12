@@ -12,6 +12,14 @@
       {% block content %} <!-- content block -->
 
       <h1> {{deal.title}}  </h1> provided by {{owner.username}}
+      <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
+        {% csrf_token %}
+        {% if not bookmark %}
+        <input type="submit" value="Bookmark this deal!" class="btn btn-default" name="bookmark" />
+        {% else %}
+        <input type="submit" value="Remove from bookmark" class="btn btn-danger" name="remove-bookmark" />
+        {% endif %}
+      </form>
 
       <h3> Description </h3>
       <p> {{deal.description}}  </p>

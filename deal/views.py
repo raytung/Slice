@@ -105,7 +105,7 @@ def detail(request, pk):
         has_pledged = Commitment.objects.filter(deal_id=pk, user_id=request.user.id)
 
         pledge_form = CommitmentForm()
-        if request.method == 'POST':
+        if 'submit-pledge' in request.POST:
             pledge_form = CommitmentForm(request.POST)
             if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
                 pledge = pledge_form.save(commit=False)
@@ -116,14 +116,22 @@ def detail(request, pk):
                 found_deal.available_units -= pledge.units
                 found_deal.save()
                 has_pledged = Commitment.objects.filter(deal_id=pk, user_id=request.user.id)
-
+        elif 'bookmark' in request.POST:
+            current_viewer.bookmarks.add(found_deal)
+        elif 'remove-bookmark' in request.POST:
+            current_viewer.bookmarks.remove(found_deal)
         owner = User.objects.get(id=found_deal.owner_id)
     except ObjectDoesNotExist:
         found_deal = None
         owner = None
 
+    bookmark = current_viewer.bookmarks.filter(bookmarks__deal=found_deal)
+    if found_deal not in bookmark:
+        bookmark = None
+
     context_dict = {'deal': found_deal,
                     'owner': owner,
                     'pledge_form': pledge_form,
-                    'has_pledged': has_pledged,}
+                    'has_pledged': has_pledged,
+                    'bookmark': bookmark}
     return render(request, 'deal_detail.html', context_dict)

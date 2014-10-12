@@ -58,6 +58,7 @@ class Profile(models.Model):
     consecutive_incorrect_login_counts = models.PositiveIntegerField(default=0)
     rating = models.IntegerField(default=0)
     viewing_history = models.ManyToManyField(Deal, through='History')
+    bookmarks = models.ManyToManyField(Deal, related_name="bookmarks")
 
     #Multiplicities
     account = models.OneToOneField(Account, primary_key=True)
@@ -69,3 +70,4 @@ class History(models.Model):
     user = models.ForeignKey('UserProfile.Profile')
     deal = models.ForeignKey('deal.Deal')
     view_date = models.DateTimeField(auto_now=True)
+

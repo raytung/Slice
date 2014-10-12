@@ -146,3 +146,9 @@ def myslice(request):
     deals = Deal.objects.filter(commitment__user_id=request.user.id)
 
     return render(request, 'profile_myslice.html', {'deals': deals})
+
+def bookmarks(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/account/login')
+
+    return render(request, 'profile_bookmarks.html', {})
