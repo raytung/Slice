@@ -45,8 +45,7 @@ def index(request):
 def profile_check_login(request):
     if not request.user.is_authenticated():
         #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
@@ -58,8 +57,7 @@ def profile_check_login(request):
 def edit_profile(request):
     if not request.user.is_authenticated():
         #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
@@ -85,8 +83,7 @@ def edit_profile(request):
 def edit_description(request):
     if not request.user.is_authenticated():
         #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
@@ -111,8 +108,7 @@ def edit_description(request):
 def edit_contact(request):
     if not request.user.is_authenticated():
         #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
@@ -138,7 +134,8 @@ def edit_contact(request):
 
 def my_deals(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/account/login')
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     deals = Deal.objects.filter(owner_id=request.user.id)
     piginated_obj, last_page = get_piginator(deals, request)
@@ -150,7 +147,8 @@ def my_deals(request):
 
 def history(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/account/login')
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     history = Deal.objects.filter(history__user_id=request.user.id)
 
@@ -162,7 +160,8 @@ def history(request):
 
 def myslice(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/account/login')
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
     deals = Deal.objects.filter(commitment__user_id=request.user.id)
 
     piginated_obj, last_page = get_piginator(deals, request)
@@ -175,7 +174,8 @@ def myslice(request):
 
 def bookmarks(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/account/login')
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     current_viewer = Profile.objects.get(account_id=request.user.id)
     bookmark = current_viewer.bookmarks.all()

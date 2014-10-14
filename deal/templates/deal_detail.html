@@ -1,7 +1,5 @@
 {% extends "site_base.html" %}
-
 {% load i18n %}
-
 {% block body %}
 
 <div class="container">
@@ -12,6 +10,7 @@
       {% block content %} <!-- content block -->
 
       <h1> {{deal.title}}  </h1> provided by {{owner.username}}
+      {% if signed_in%}
       <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
         {% csrf_token %}
         {% if not bookmark %}
@@ -20,6 +19,7 @@
         <input type="submit" value="Remove from bookmark" class="btn btn-danger" name="remove-bookmark" />
         {% endif %}
       </form>
+      {% endif %}
 
       <h3> Description </h3>
       <p> {{deal.description}}  </p>
@@ -46,50 +46,61 @@
   </div> <!-- end row -->
 
   <div class="row">
-    {% if has_pledged %}
-    <div class="alert alert-success" role="alert" style="margin-top: 1em;">
-      You have already pledged towards this deal!
-      </div>
+
+ <h1> Make a Pledge </h1>
+    {% if signed_in%}
+        {% if has_pledged %}
+          <div class="alert alert-success" role="alert" style="margin-top: 1em;">
+            You have already pledged towards this deal!
+          </div>
+          {% endif %} {# end has_pledge #}
+
+        {% if deal.available_units %}
+          <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
+            {% csrf_token %}
+
+            {% for field in pledge_form %} {# start pledge_form for #}
+              {% if field.errors %}
+                <div class="form-group has-error has-feedback"> <!-- start form-group div -->
+              {% else %}
+                <div class="form-group">
+              {% endif %}
+
+              <label> {{field.label}} </label>
+              {{field}}
+
+              {% for error in field.errors%}
+                <span class="help-block">
+                  <strong>{{ error|escape }}</strong>
+                </span>
+              {% endfor %} {# end for field.errors #}
+
+                </div> <!-- end form-group div -->
+            {% endfor %} {# end pledge_form for#}
+
+            <input type="submit" value="Cut me a Slice!" class="btn btn-default" name="submit-pledge" />
+
+          </form>
+          {% else %} {# if deal.available_units else #}
+            <div class="alert alert-info" role="alert"> 
+              This deal has no units left! :( <br/>
+              Thank you for your interest!
+            </div>
+          {% endif %} {# end if deal.available_units #}
+    {% else %} {# if signed_in else #}
+      Please sign in to pledge
 
     {% endif %}
-   {% if deal.available_units %}
- <h1> Make a Pledge </h1> 
-     <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
-       {% csrf_token %}
-       {% for field in pledge_form  %}
-          {% if field.errors %}
-             <div class="form-group has-error has-feedback">
-          {% else %}
-             <div class="form-group">
-          {% endif %}
-       <label> {{field.label}} </label>
-       {{field}}
-       {% for error in field.errors%}
-          <span class="help-block">
-            <strong>{{ error|escape }}</strong>
-          </span>
-       {% endfor %}
-     </div> <!-- end form-group div -->
-     {% endfor %} <!-- end pledge_form for -->
-
-     <input type="submit" value="Cut me a Slice!" class="btn btn-default" name="submit-pledge" />
-
-     </form>
-    {% else %}
-    <div class="alert alert-info" role="alert"> 
-      This deal has no units left! :( <br/>
-      Thank you for your interest!
-    </div>
-
-    {% endif %}
 
 
 
-  </div>
-  {% else %}
+  </div> <!-- end row -->
+  {% else %} {# if deal else #}
+   <div class="alert alert-danger" role="alert"> 
+      No deal is found. Did you enter the correct URL?
+   </div>
 
-
-  {% endif %}
+  {% endif %} {# end if deal#}
 </div> <!-- end container -->
 {% endblock %}
 
