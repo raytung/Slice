@@ -4,6 +4,8 @@ from django.template      import RequestContext
 from django.shortcuts     import render_to_response
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
+#https://docs.djangoproject.com/en/dev/topics/pagination/
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -16,6 +18,17 @@ from account import urls, models
 from UserProfile.models import Profile, History
 from UserProfile.forms import EditAccountForm, EditDescriptionForm, EditContactForm
 from deal.models import Deal
+
+def get_piginator(obj, request):
+  piginator  = Paginator(obj, 5)
+  page = request.GET.get('page')
+  try:
+      temp = piginator.page(page)
+  except PageNotAnInteger:
+      temp = piginator.page(1)
+  except EmptyPage:
+      temp = piginator.page(piginator.num_pages)
+  return temp, piginator.num_pages
 
 def index(request):
     #RequestContext gets the info on user's request
@@ -32,8 +45,7 @@ def index(request):
 def profile_check_login(request):
     if not request.user.is_authenticated():
         #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
@@ -45,8 +57,7 @@ def profile_check_login(request):
 def edit_profile(request):
     if not request.user.is_authenticated():
         #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
@@ -72,8 +83,7 @@ def edit_profile(request):
 def edit_description(request):
     if not request.user.is_authenticated():
         #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
@@ -98,8 +108,7 @@ def edit_description(request):
 def edit_contact(request):
     if not request.user.is_authenticated():
         #redirect to login page
-        #this is bad practice, but I can't see to resolve it
-        return HttpResponseRedirect('/account/login')
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
@@ -125,24 +134,57 @@ def edit_contact(request):
 
 def my_deals(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/account/login')
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     deals = Deal.objects.filter(owner_id=request.user.id)
+    piginated_obj, last_page = get_piginator(deals, request)
 
-    return render(request, 'profile_mydeals.html', {'deals': deals})
+    context_dict = {'deals': piginated_obj,
+                    'last_page': last_page}
+
+    return render(request, 'profile_mydeals.html', context_dict)
 
 def history(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/account/login')
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
 
     history = Deal.objects.filter(history__user_id=request.user.id)
 
+    piginated_obj, last_page = get_piginator(history, request)
+    context_dict = {'deals': piginated_obj,
+                    'last_page': last_page}
 
-    return render(request, 'profile_history.html', {'deals': history})
+    return render(request, 'profile_history.html', context_dict)
 
 def myslice(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/account/login')
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
     deals = Deal.objects.filter(commitment__user_id=request.user.id)
 
-    return render(request, 'profile_myslice.html', {'deals': deals})
+    piginated_obj, last_page = get_piginator(deals, request)
+
+    context_dict = {'deals': piginated_obj,
+                    'last_page': last_page}
+
+
+    return render(request, 'profile_myslice.html', context_dict)
+
+def bookmarks(request):
+    if not request.user.is_authenticated():
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
+
+    current_viewer = Profile.objects.get(account_id=request.user.id)
+    bookmark = current_viewer.bookmarks.all()
+
+    piginated_obj, last_page = get_piginator(bookmark, request)
+
+    context_dict = {'deals': piginated_obj,
+                    'last_page': last_page}
+
+    return render(request, 'profile_bookmarks.html', context_dict)
+
+

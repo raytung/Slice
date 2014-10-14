@@ -68,9 +68,9 @@ def index(request):
     return render_to_response('deal_index.html', context_dict, context)
 
 def create_deal_check_login(request):
-    #redirect if not logged in
     if not request.user.is_authenticated():
-       return HttpResponseRedirect('/account/login')
+    #redirect to login page
+       return HttpResponseRedirect('/account/login?next=' + request.path )
 
     success = False
     form = CreateDealForm()
@@ -97,15 +97,19 @@ def is_valid_pledge(pledge_form, deal):
 
 
 def detail(request, pk):
+    signed_in = request.user.is_authenticated()
     try:
+        current_viewer = None
+        history = None
         found_deal = Deal.objects.get(id=pk)
-        current_viewer = Profile.objects.get(account_id=request.user.id)
-        history = History(user=current_viewer, deal=found_deal)
-        history.save()
+        if signed_in:
+            current_viewer = Profile.objects.get(account_id=request.user.id)
+            history = History(user=current_viewer, deal=found_deal)
+            history.save()
         has_pledged = Commitment.objects.filter(deal_id=pk, user_id=request.user.id)
 
         pledge_form = CommitmentForm()
-        if request.method == 'POST':
+        if 'submit-pledge' in request.POST:
             pledge_form = CommitmentForm(request.POST)
             if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
                 pledge = pledge_form.save(commit=False)
@@ -116,14 +120,29 @@ def detail(request, pk):
                 found_deal.available_units -= pledge.units
                 found_deal.save()
                 has_pledged = Commitment.objects.filter(deal_id=pk, user_id=request.user.id)
-
+        elif 'bookmark' in request.POST:
+            current_viewer.bookmarks.add(found_deal)
+        elif 'remove-bookmark' in request.POST:
+            current_viewer.bookmarks.remove(found_deal)
         owner = User.objects.get(id=found_deal.owner_id)
     except ObjectDoesNotExist:
         found_deal = None
         owner = None
 
+    if signed_in and current_viewer:
+        bookmark = current_viewer.bookmarks.filter(bookmarks__deal=found_deal)
+        if found_deal not in bookmark:
+            bookmark = None
+    else:
+        bookmark = None
+        pledge_form = None
+        has_pledged = False
+
+
     context_dict = {'deal': found_deal,
                     'owner': owner,
                     'pledge_form': pledge_form,
-                    'has_pledged': has_pledged,}
+                    'has_pledged': has_pledged,
+                    'bookmark': bookmark,
+                    'signed_in': signed_in}
     return render(request, 'deal_detail.html', context_dict)

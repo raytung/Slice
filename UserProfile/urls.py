@@ -11,4 +11,5 @@ urlpatterns = patterns('',
         url(r'^mydeals/$', views.my_deals, name="profile_mydeals"),
         url(r'^history/$', views.history, name="profile_history"),
         url(r'^myslice/$', views.myslice, name="profile_myslice"),
+        url(r'^bookmarks/$', views.bookmarks, name="profile_bookmarks"),
 )
