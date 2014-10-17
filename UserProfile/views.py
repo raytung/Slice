@@ -50,7 +50,10 @@ def profile_check_login(request):
     user = request.user
     user_account = models.Account.objects.get(user_id=user.id)
 
-    profile = Profile.objects.get(account_id=user_account.id)
+    try:
+        profile = Profile.objects.get(account_id=user_account.id)
+    except Profile.DoesNotExist:
+        profile = Profile.objects.create_profile(user_account)
     return render(request, 'profile_index.html', { 'profile': profile,
                                                    'user':    user,
                                                   })
