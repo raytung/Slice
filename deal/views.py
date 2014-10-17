@@ -98,50 +98,57 @@ def is_valid_pledge(pledge_form, deal):
 
 
 def detail(request, pk):
+    try:
+        found_deal = Deal.objects.get(id=pk)
+    except:
+        found_deal = None
+    if not found_deal: return render(request, 'deal_detail.html', {'deal':found_deal})
+
     signed_in = request.user.is_authenticated()
-    print request.user.id
-    current_viewer = Profile.objects.get(account_id=request.user.id)
+    current_viewer = None if not signed_in else Profile.objects.get(account_id=request.user.id)
+    deal_owner = User.objects.get(id=found_deal.owner_id)
+    pledge_form = CommitmentForm()
+
+
+    # don't want double history on bookmarking/pledging
+    # will have double history on refresh though
+    if signed_in and request.method != 'POST':
+        History(user=current_viewer, deal=found_deal).save()
 
     try:
-        current_viewer = None
-        history = None
-        found_deal = Deal.objects.get(id=pk)
-        if signed_in:
-            current_viewer = Profile.objects.get(account_id=request.user.id)
-            history = History(user=current_viewer, deal=found_deal)
-            history.save()
         has_pledged = Commitment.objects.filter(deal_id=pk, user_id=request.user.id)
-
-        pledge_form = CommitmentForm()
-        if 'submit-pledge' in request.POST:
-            pledge_form = CommitmentForm(request.POST)
-            if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
-                pledge = pledge_form.save(commit=False)
-                pledge.last_modified_date= timezone.now()
-                pledge.user = current_viewer
-                pledge.deal = found_deal
-                pledge.save()
-                found_deal.available_units -= pledge.units
-                found_deal.save()
-                has_pledged = Commitment.objects.filter(deal_id=pk, user_id=request.user.id)
-        elif 'bookmark' in request.POST:
-            current_viewer.bookmarks.add(found_deal)
-        elif 'remove-bookmark' in request.POST:
-            current_viewer.bookmarks.remove(found_deal)
-        owner = User.objects.get(id=found_deal.owner_id)
     except ObjectDoesNotExist:
-        found_deal = None
-        owner = None
+        has_pledged = False
+
+    if 'submit-pledge' in request.POST:
+        pledge_form = CommitmentForm(request.POST)
+        if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
+            pledge = pledge_form.save(commit=False)
+            pledge.last_modified_date= timezone.now()
+            pledge.user = current_viewer
+            pledge.deal = found_deal
+            pledge.save()
+
+            found_deal.available_units -= pledge.units
+            found_deal.save()
+            has_pledged = True
+    elif 'bookmark' in request.POST:
+        current_viewer.bookmarks.add(found_deal)
+    elif 'remove-bookmark' in request.POST:
+        current_viewer.bookmarks.remove(found_deal)
 
     bookmark = []
     if signed_in and current_viewer:
-        bookmark = current_viewer.bookmarks.filter(bookmarks__deal=found_deal)
+        try:
+            bookmark = current_viewer.bookmarks.get(id=found_deal.id)
+        except ObjectDoesNotExist:
+            bookmark = None
     else:
         pledge_form = None
         has_pledged = False
 
     context_dict = {'deal': found_deal,
-                    'owner': owner,
+                    'owner': deal_owner,
                     'pledge_form': pledge_form,
                     'has_pledged': has_pledged,
                     'bookmark': bookmark,
