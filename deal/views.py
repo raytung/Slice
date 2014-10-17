@@ -81,6 +81,7 @@ def create_deal_check_login(request):
        if form.is_valid():
            deal = form.save(commit=False)
            deal.owner_id = request.user.id
+           deal.available_units = deal.num_units
            deal.save()
            success = True
     return render(request, 'create_deal.html', { 'form': form,
