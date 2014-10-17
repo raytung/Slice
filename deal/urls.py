@@ -8,7 +8,10 @@ from deal.models import Deal
 
 #performance!!
 #also, will have problem if no deals in database
-max_id = Deal.objects.all().order_by("-id")[0].id
+if Deal.objects.all():
+    max_id = Deal.objects.all().order_by("-id")[0].id
+else:
+    max_id = 0
 length = len(str(max_id))
 
 deal_detail_regex = r'^([0-9]{1,'+ str(length)  +'})/$'
