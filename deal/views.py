@@ -29,7 +29,7 @@ def getStringFromInput(form, s):
 
 def index(request):
     context = RequestContext(request)
-    deals = Deal.objects.all().select_related('UserProfile_Profile')
+    deals = Deal.objects.all()
 
 
     form = SearchDealForm(data=request.GET)
@@ -99,6 +99,9 @@ def is_valid_pledge(pledge_form, deal):
 
 def detail(request, pk):
     signed_in = request.user.is_authenticated()
+    print request.user.id
+    current_viewer = Profile.objects.get(account_id=request.user.id)
+
     try:
         current_viewer = None
         history = None
@@ -130,15 +133,12 @@ def detail(request, pk):
         found_deal = None
         owner = None
 
+    bookmark = []
     if signed_in and current_viewer:
         bookmark = current_viewer.bookmarks.filter(bookmarks__deal=found_deal)
-        if found_deal not in bookmark:
-            bookmark = None
     else:
-        bookmark = None
         pledge_form = None
         has_pledged = False
-
 
     context_dict = {'deal': found_deal,
                     'owner': owner,

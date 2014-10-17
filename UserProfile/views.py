@@ -54,6 +54,7 @@ def profile_check_login(request):
         profile = Profile.objects.get(account_id=user_account.id)
     except Profile.DoesNotExist:
         profile = Profile.objects.create_profile(user_account)
+
     return render(request, 'profile_index.html', { 'profile': profile,
                                                    'user':    user,
                                                   })
