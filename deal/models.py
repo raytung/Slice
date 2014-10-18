@@ -5,7 +5,6 @@ from django.utils import timezone
 # https://docs.djangoproject.com/en/dev/ref/validators/#minvaluevalidator
 from django.core.validators import MinValueValidator
 
-
 # Create your models here.
 
 '''
@@ -55,6 +54,7 @@ class Deal(models.Model):
    cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    num_units = models.PositiveIntegerField()
    available_units = models.PositiveIntegerField()
+   savings = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    start_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
    end_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
    '''
@@ -101,8 +101,6 @@ class Deal(models.Model):
         #start date cannot be later than end date. Does not save.
        if self.start_date >= self.end_date:
            return
-
-
 
        super(Deal, self).save(*args, **kwargs)
 

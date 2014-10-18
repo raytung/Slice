@@ -8,7 +8,6 @@ import django.core.validators
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('UserProfile', '__first__')
     ]
 
     operations = [
@@ -30,9 +29,9 @@ class Migration(migrations.Migration):
                 ('short_desc', models.CharField(default=b'No Description', max_length=200)),
                 ('description', models.TextField(max_length=1000)),
                 ('cost_per_unit', models.DecimalField(max_digits=5, decimal_places=2, validators=[django.core.validators.MinValueValidator(0.0)])),
-                ('available_units', models.PositiveIntegerField(default=1)),
-                ('savings', models.DecimalField(default=1, max_digits=5, decimal_places=2, validators=[django.core.validators.MinValueValidator(0.0)])),
                 ('num_units', models.PositiveIntegerField()),
+                ('available_units', models.PositiveIntegerField()),
+                ('savings', models.DecimalField(max_digits=5, decimal_places=2, validators=[django.core.validators.MinValueValidator(0.0)])),
                 ('start_date', models.DateTimeField(help_text=b'MM/DD/YYYY hh:mm')),
                 ('end_date', models.DateTimeField(help_text=b'MM/DD/YYYY hh:mm')),
                 ('state', models.CharField(max_length=4, choices=[(b'CMNG', b'Coming up'), (b'STRT', b'Started'), (b'ENDD', b'Ended'), (b'CNCL', b'Canceled'), (b'DLYD', b'Delayed')])),
@@ -41,7 +40,6 @@ class Migration(migrations.Migration):
                 ('time_posted', models.DateTimeField(auto_now=True)),
                 ('last_modified_date', models.DateTimeField(auto_now=True)),
                 ('category', models.ForeignKey(to='deal.Category')),
-                ('owner', models.ForeignKey(to='UserProfile.Profile')),
             ],
             options={
             },
