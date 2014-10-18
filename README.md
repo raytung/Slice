@@ -5,7 +5,7 @@ Bulk Buy
 Getting Started:
 
     cd Slice
-    pip install -r requirements.txt
+    sudo pip install -r requirements.txt
 
 Setup database:    
 1 - Install this backend binding
