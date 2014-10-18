@@ -8,6 +8,7 @@ import django.core.validators
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('UserProfile', '__first__')
     ]
 
     operations = [
@@ -29,6 +30,8 @@ class Migration(migrations.Migration):
                 ('short_desc', models.CharField(default=b'No Description', max_length=200)),
                 ('description', models.TextField(max_length=1000)),
                 ('cost_per_unit', models.DecimalField(max_digits=5, decimal_places=2, validators=[django.core.validators.MinValueValidator(0.0)])),
+                ('available_units', models.PositiveIntegerField(default=1)),
+                ('savings', models.DecimalField(default=1, max_digits=5, decimal_places=2, validators=[django.core.validators.MinValueValidator(0.0)])),
                 ('num_units', models.PositiveIntegerField()),
                 ('start_date', models.DateTimeField(help_text=b'MM/DD/YYYY hh:mm')),
                 ('end_date', models.DateTimeField(help_text=b'MM/DD/YYYY hh:mm')),
