@@ -6,7 +6,6 @@ Getting Started:
 
     cd Slice
     pip install -r requirements.txt
-    python manage.py runserver
 
 Setup database:    
 1 - Install this backend binding
@@ -30,7 +29,9 @@ Setup database:
 
 6 - go to Slice/ directory    
 
-    python manage.py loaddata deal_category   
+    python manage.py loaddata deal_category  
+    python manage.py loaddata initial_data
+ 
 
 This step loads my pre-defined data for deal_category from
 deal/fixture/deal_category.yaml    
