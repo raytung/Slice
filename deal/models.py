@@ -78,8 +78,8 @@ class Deal(models.Model):
 
     #Multiplicities
    search_tags = models.ManyToManyField("SearchTag")
-   owner = models.ForeignKey("UserProfile.Profile")
    category = models.ForeignKey('deal.Category')
+   owner = models.ForeignKey("UserProfile.Profile")
 
     #User not modifiable
    time_posted = models.DateTimeField(auto_now=True)
