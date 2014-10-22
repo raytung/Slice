@@ -4,6 +4,7 @@ from django.utils import timezone
 
 # https://docs.djangoproject.com/en/dev/ref/validators/#minvaluevalidator
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -55,8 +56,8 @@ class Deal(models.Model):
    num_units = models.PositiveIntegerField()
    available_units = models.PositiveIntegerField()
    savings_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
-   start_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
-   end_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
+   start_date = models.DateTimeField(auto_now=False, help_text="dd/MM/YYYY hh:mm")
+   end_date = models.DateTimeField(auto_now=False, help_text="dd/MM/YYYY hh:mm")
    '''
        Specifies the state of each deal.
        the first element of each tuple is the actual data stored in the database.
@@ -90,21 +91,7 @@ class Deal(models.Model):
 
     #overriding the default save method.
 
-   def save(self, *args, **kwargs):
-       if   self.start_date > timezone.now():
-           self.state = "CMNG"
-       elif self.start_date < timezone.now():
-           self.state = "STRT"
-       elif self.end_date <= timezone.now():
-           self.state = "ENDD"
-
-        #start date cannot be later than end date. Does not save.
-       if self.start_date >= self.end_date:
-           return
-
-       super(Deal, self).save(*args, **kwargs)
-
-
+   
 class SearchTag(models.Model):
     tag_name = models.CharField(max_length=20,
             unique=True)

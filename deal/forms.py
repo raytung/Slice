@@ -7,9 +7,19 @@ import datetime
 #self defined
 from Slice.forms import BootstrapModelForm, BootstrapForm
 from deal.models import Deal, Category, Rating
+from django.utils import timezone
 
 #inherit Bootstrapform
 class CreateDealForm(BootstrapModelForm):
+    start_date = forms.DateTimeField(input_formats=['%d/%m/%Y',
+                                              '%d/%m/%Y %H:%M',
+                                              '%d-%m-%Y',
+                                              '%d-%m-%Y %H:%M'])
+
+    end_date = forms.DateTimeField(input_formats=['%d/%m/%Y',
+                                              '%d/%m/%Y %H:%M',
+                                              '%d-%m-%Y',
+                                              '%d-%m-%Y %H:%M'])
 
     '''
         Defines the Meta data of your form here. (See your models.py)
@@ -22,12 +32,14 @@ class CreateDealForm(BootstrapModelForm):
                   'features_benefits',
                   'category',
                   'cost_per_unit',
+                  'savings',
                   'num_units',
                   'savings_per_unit',
                   'start_date',
                   'end_date',
                   'delivery_method',
                   'min_pledge_amount',
+                  'savings'
                   ]
 
         # If you want to override the default label names
@@ -41,8 +53,8 @@ class CreateDealForm(BootstrapModelForm):
         }
 
         error_messages = {
-                'start_date':{'invalid': 'Invalid date format. Make sure it is in mm/dd/yyyy'},
-                'end_date'  :{'invalid': 'Invalid date format. Make sure it is in mm/dd/yyyy'},
+                'start_date':{'invalid': 'Invalid date format. Make sure it is in dd/mm/yyyy'},
+                'end_date'  :{'invalid': 'Invalid date format. Make sure it is in dd/mm/yyyy'},
                 'cost_per_unit':{'invalid': 'Cost cannot be less than 0!'},
                 }
 
@@ -54,6 +66,21 @@ class CreateDealForm(BootstrapModelForm):
                 'class':'form-control'
             }),
         }
+
+    def clean(self):
+        cleaned_data = super(CreateDealForm, self).clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
+        now = timezone.now()
+        if start_date < now:
+            self._errors['start_date'] = self.error_class([ 'Start date cannot be earlier than now'])
+        elif end_date < now:
+            self._errors['end_date'] = self.error_class([ 'End date cannot be earlier than now'])
+        elif end_date < start_date:
+            self._errors['end_date'] = self.error_class(['End date cannot be earlier than start date'])
+            self._errors['start_date'] = self.error_class(['End date cannot be earlier than start date'])
+        return cleaned_data
+
 
 class SearchDealForm(BootstrapForm):
    search = forms.CharField(max_length=100, required=False)

@@ -6,3 +6,6 @@ eventlog==0.8.0
 django-jsonfield==0.9.12
 pyyaml
 django-widget-tweaks
+psycopg2
+dj-database-url
+sendgrid>=0.5.0

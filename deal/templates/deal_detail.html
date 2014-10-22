@@ -22,22 +22,25 @@
       {% endif %}
       <br/>
       <strong>Rating: </strong> {{avg_rating}} <br/>
+      {% if not is_expired%}
       <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
         {% csrf_token %}
         <div class="form-group">
           {{rate_form}}
         </div>
           <input type="submit" value="Rate Deal" class="btn btn-default" name="rate-deal" />
-      </form>
+        </form>
+
+        {% endif %}
 
       <h3> Description </h3>
       <p> {{deal.description}}  </p>
       <h4> Features and Benefits <h4>
       <p> {{deal.features_benefits}}  </p>
       <p><strong>Due Date:</strong> {{deal.end_date}} </p>
-      <p><strong>Price per unit:</strong> ${{deal.cost_per_unit}} </p>
+      <p><strong>Price:</strong> ${{deal.cost_per_unit}} </p>
       <p><strong>Savings involved per unit:</strong> ${{deal.savings_per_unit}} </p>
-      <p><strong>Units left:</strong> {{deal.available_units}}
+      <p><strong>Units left:</strong> {{units_left}}
       <p><strong>Delivery method:</strong> {{deal.delivery_method}}</p>
       <p><strong>Minimum Total Pledges Required:</strong> {{deal.min_pledge_amount}}</p>
 
@@ -56,6 +59,7 @@
     </div>
   </div> <!-- end row -->
 
+{% if not is_expired %}
   <div class="row">
 
  <h1> Make a Pledge </h1>
@@ -66,7 +70,7 @@
           </div>
           {% endif %} {# end has_pledge #}
 
-        {% if deal.available_units %}
+          {% if units_left > 0 %}
           <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
             {% csrf_token %}
 
@@ -92,12 +96,12 @@
             <input type="submit" value="Cut me a Slice!" class="btn btn-default" name="submit-pledge" />
 
           </form>
-          {% else %} {# if deal.available_units else #}
+          {% else %} {# if units_left else #}
             <div class="alert alert-info" role="alert"> 
               This deal has no units left! :( <br/>
               Thank you for your interest!
             </div>
-          {% endif %} {# end if deal.available_units #}
+          {% endif %} {# end if units_left #}
     {% else %} {# if signed_in else #}
       Please sign in to pledge
 
@@ -106,6 +110,12 @@
 
 
   </div> <!-- end row -->
+  {% else%} {# if not is expired else #}
+    <div class="alert alert-danger" role="alert"> 
+      Deal has expired!
+    </div>
+
+  {% endif %}
   {% else %} {# if deal else #}
    <div class="alert alert-danger" role="alert"> 
       No deal is found. Did you enter the correct URL?
