@@ -74,3 +74,14 @@ class UploadImageForm(BootstrapForm):
     class Meta:
         model = DealImage
         fields = ['image']
+
+class EditDealForm(BootstrapForm):
+  class Meta:
+    model = Deal
+    fields = ['title', 
+              'short_desc',
+              'description',
+              'category',
+              'delivery_method'
+              ]
+      labels = {'short_desc': 'Short description'}

@@ -183,22 +183,7 @@ def detail(request, pk):
     return render(request, 'deal_detail.html', context_dict)
 
 
-def edit (request, pk): 
+def edit_deal (request, pk): 
     pass
-'''
-    if request = 'POST':
-        form = CreateDealForm(request.POST)
-
-        if edit_deal_form.is_valid():
-            edit_deal = Deal.objects.get(id=pk)
-            form = CreateDealForm(request.POST, instance = edit_deal)
-            form.save()
-            print 'here'
-        else:
-            edit_deal = Deal.objects.get(id=pk)
-            form = CreateDealForm(instance = edit_deal)
-        return render_to_response('editdeal.html', edit_deal_form : {'form' : form, 
-                                                                     'request': request})
-
-'''
+    
 

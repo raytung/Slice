@@ -28,5 +28,5 @@ urlpatterns = patterns('',
         url(r'^$', views.index, name="deals_index"),
         url(r'^create', views.create_deal_check_login, name="deal_create"),
         url(deal_detail_regex+"$", views.detail, name="deal_detail"),
-        url(deal_detail_regex+"edit/$", views.edit, name = "deal_edit"),
+        url(deal_detail_regex+"edit/$", views.edit_deal, name = "deal_edit"),
         ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
