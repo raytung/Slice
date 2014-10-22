@@ -20,6 +20,15 @@
         {% endif %}
       </form>
       {% endif %}
+      <br/>
+      <strong>Rating: </strong> {{avg_rating}} <br/>
+      <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+          {{rate_form}}
+        </div>
+          <input type="submit" value="Rate Deal" class="btn btn-default" name="rate-deal" />
+      </form>
 
       <h3> Description </h3>
       <p> {{deal.description}}  </p>

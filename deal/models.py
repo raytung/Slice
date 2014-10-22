@@ -3,7 +3,7 @@ from datetime     import datetime
 from django.utils import timezone
 
 # https://docs.djangoproject.com/en/dev/ref/validators/#minvaluevalidator
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 
@@ -118,5 +118,11 @@ class Category(models.Model):
     def __unicode__(self):
         return self.name
 
+class Rating(models.Model):
+    rating = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    deal = models.ForeignKey("deal.Deal")
+    user = models.ForeignKey("UserProfile.Profile", related_name="current_user")
+    #use Queryset.objects.get_or_create() or else user can rate many times
 
-
+    def __unicode__(self):
+        return self.rating

@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 #self defined
 from Slice.forms import BootstrapModelForm, BootstrapForm
-from deal.models import Deal, Category
+from deal.models import Deal, Category, Rating
 
 #inherit Bootstrapform
 class CreateDealForm(BootstrapModelForm):
@@ -63,4 +63,7 @@ class SearchDealForm(BootstrapForm):
    end_date = forms.DateTimeField(required=False)
    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False)
 
-
+class RateDealForm(BootstrapModelForm):
+    class Meta:
+        model = Rating
+        fields = ['rating']
