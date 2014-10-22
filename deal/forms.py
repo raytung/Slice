@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 #self defined
 from Slice.forms import BootstrapModelForm, BootstrapForm
 from deal.models import Deal, Category, Rating
+from django.utils import timezone
 
 #inherit Bootstrapform
 class CreateDealForm(BootstrapModelForm):
@@ -25,6 +26,7 @@ class CreateDealForm(BootstrapModelForm):
                   'end_date',
                   'delivery_method',
                   'min_pledge_amount',
+                  'savings'
                   ]
 
         # If you want to override the default label names
@@ -51,6 +53,21 @@ class CreateDealForm(BootstrapModelForm):
                 'class':'form-control'
             }),
         }
+
+    def clean(self):
+        cleaned_data = super(CreateDealForm, self).clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
+        now = timezone.now()
+        if start_date < now:
+            self._errors['start_date'] = self.error_class([ 'Start date cannot be earlier than now'])
+        elif end_date < now:
+            self._errors['end_date'] = self.error_class([ 'End date cannot be earlier than now'])
+        elif end_date < start_date:
+            self._errors['end_date'] = self.error_class(['End date cannot be earlier than start date'])
+            self._errors['start_date'] = self.error_class(['End date cannot be earlier than start date'])
+        return cleaned_data
+
 
 class SearchDealForm(BootstrapForm):
    search = forms.CharField(max_length=100, required=False)
