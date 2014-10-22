@@ -91,4 +91,20 @@ templates/
 New project:   `django-admin startproject <project name>`    
 New app:    `dango-admin startapp <app name>`    
 Run the server:   `python manage.py runserver`    
-Database synchronization:     `python manage.py syncdb`
+Database synchronization:     `python manage.py syncdb`     
+
+#Git Basic    
+=======
+####Branches     
+To create a new branch     
+
+      `git checkout -b <new-branch-name> `   
+
+To switch to another branch    
+
+      `git checkout <branch-name>`    
+
+To push to your branch     
+
+     `git push origin <branch-name>`     
+
