@@ -15,12 +15,13 @@ from django.db.models import Q, Avg
 from account import urls
 
 #Models
-from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm
+from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm, UploadImageForm
 from deal.models import Deal, Rating
 from django.contrib.auth.models import User
 from UserProfile.models import Profile, History
 from Pledge.forms import CommitmentForm
 from Pledge.models import Commitment
+
 
 def getStringFromInput(form, s):
     """ Retrieves the string value from the input field in the given form  """
@@ -48,7 +49,7 @@ def index(request):
         #https://docs.djangoproject.com/en/dev/ref/models/querysets/
         q = Q()
         if search_key:
-            q |= Q(title__contains=search_key)
+            q |= Q(title__iexact=search_key)
             q |= Q(short_desc__contains=search_key)
             q |= Q(description__contains=search_key)
 
@@ -77,13 +78,18 @@ def create_deal_check_login(request):
     search_form = SearchDealForm()
 
     if request.method == 'POST':
-       form = CreateDealForm(request.POST)
+       form = CreateDealForm(request.POST, request.FILES)
+
        if form.is_valid():
            deal = form.save(commit=False)
            deal.owner_id = request.user.id
            deal.available_units = deal.num_units
+           deal.thumbnail = request.FILES['thumbnail']
+           #save_file(request.FILES['image'])
            deal.save()
            success = True
+       else:
+            print form.errors
     return render(request, 'create_deal.html', { 'form': form,
                                                  'request': request,
                                                  'search_form': search_form,
@@ -164,7 +170,7 @@ def detail(request, pk):
         avg_rating = avg_rating['rating__avg']
     else:
         avg_rating = "This deal has no ratings yet. Be the first one to rate it!"
-
+ 
 
     context_dict = {'deal': found_deal,
                     'owner': deal_owner,
@@ -175,3 +181,24 @@ def detail(request, pk):
                     'rate_form': rate_form,
                     'avg_rating': avg_rating}
     return render(request, 'deal_detail.html', context_dict)
+
+
+def edit (request, pk): 
+    pass
+'''
+    if request = 'POST':
+        form = CreateDealForm(request.POST)
+
+        if edit_deal_form.is_valid():
+            edit_deal = Deal.objects.get(id=pk)
+            form = CreateDealForm(request.POST, instance = edit_deal)
+            form.save()
+            print 'here'
+        else:
+            edit_deal = Deal.objects.get(id=pk)
+            form = CreateDealForm(instance = edit_deal)
+        return render_to_response('editdeal.html', edit_deal_form : {'form' : form, 
+                                                                     'request': request})
+
+'''
+

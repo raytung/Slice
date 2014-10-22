@@ -6,3 +6,5 @@ eventlog==0.8.0
 django-jsonfield==0.9.12
 pyyaml
 django-widget-tweaks
+pillow
+django-resized

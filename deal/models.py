@@ -1,6 +1,8 @@
 from django.db    import models
 from datetime     import datetime
 from django.utils import timezone
+from django_resized import ResizedImageField
+from PIL import Image
 
 # https://docs.djangoproject.com/en/dev/ref/validators/#minvaluevalidator
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -57,6 +59,13 @@ class Deal(models.Model):
    savings = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    start_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
    end_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
+
+   thumbnail = ResizedImageField(max_width=64, max_height=64, upload_to = 'upload_image/', null=True, blank=True)    
+   '''
+   thumbnail_height = models.PositiveIntegerField(null=True, blank=True, editable=False, default="64")
+   thumbnail_width = models.PositiveIntegerField(null=True, blank=True, editable=False, default="64")
+   '''
+
    '''
        Specifies the state of each deal.
        the first element of each tuple is the actual data stored in the database.
@@ -91,18 +100,17 @@ class Deal(models.Model):
     #overriding the default save method.
 
    def save(self, *args, **kwargs):
-       if   self.start_date > timezone.now():
-           self.state = "CMNG"
-       elif self.start_date < timezone.now():
-           self.state = "STRT"
-       elif self.end_date <= timezone.now():
-           self.state = "ENDD"
+    if not self.thumbnail: return   
 
-        #start date cannot be later than end date. Does not save.
-       if self.start_date >= self.end_date:
-           return
+    thumbnail = Image.open(self.thumbnail)
+    size = (64, 64)
+    thumbnail = thumbnail.resize(size, Image.ANTIALIAS)
+    thumbnail.save(self.thumbnail.path)
 
-       super(Deal, self).save(*args, **kwargs)
+    super(Deal, self).save(*args, **kwargs)
+    #start date cannot be later than end date. Does not save.
+    if self.start_date >= self.end_date:
+      return
 
 
 class SearchTag(models.Model):
@@ -126,3 +134,7 @@ class Rating(models.Model):
 
     def __unicode__(self):
         return self.rating
+
+class DealImage(models.Model):
+  deal = models.ForeignKey(Deal, related_name="image")
+  image = models.ImageField(upload_to = 'upload_image/', null = True)

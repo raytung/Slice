@@ -190,5 +190,3 @@ def bookmarks(request):
                     'last_page': last_page}
 
     return render(request, 'profile_bookmarks.html', context_dict)
-
-

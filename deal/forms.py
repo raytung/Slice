@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 #self defined
 from Slice.forms import BootstrapModelForm, BootstrapForm
-from deal.models import Deal, Category, Rating
+from deal.models import Deal, Category, Rating, DealImage
 
 #inherit Bootstrapform
 class CreateDealForm(BootstrapModelForm):
@@ -25,6 +25,8 @@ class CreateDealForm(BootstrapModelForm):
                   'end_date',
                   'delivery_method',
                   'min_pledge_amount',
+                  'savings',
+                  'thumbnail'
                   ]
 
         # If you want to override the default label names
@@ -67,3 +69,8 @@ class RateDealForm(BootstrapModelForm):
     class Meta:
         model = Rating
         fields = ['rating']
+
+class UploadImageForm(BootstrapForm):
+    class Meta:
+        model = DealImage
+        fields = ['image']
