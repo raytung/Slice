@@ -167,6 +167,13 @@ INSTALLED_APPS = [
 
 ]
 
+if DEBUG:
+    EMAIL_HOST = '127.0.0.1'
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+    EMAIL_PORT = 1025
+    EMAIL_USE_TLS = False
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -212,3 +219,6 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
 AUTHENTICATION_BACKENDS = [
     "account.auth_backends.UsernameAuthenticationBackend",
 ]
+
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
