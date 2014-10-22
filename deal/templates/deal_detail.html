@@ -9,7 +9,7 @@
     <div class="col-md-8" id="deal-content">
       {% block content %} <!-- content block -->
 
-      <h1> {{deal.title}}  </h1> provided by {{owner.username}}
+      <h1> {{deal.title}}  </h1> provided by <a href="{% url 'users_detail' owner.id %}">{{owner.username}}</a>
       {% if signed_in%}
       <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
         {% csrf_token %}
