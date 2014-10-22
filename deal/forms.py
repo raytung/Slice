@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+import datetime
 
 
 
@@ -28,10 +29,12 @@ class CreateDealForm(BootstrapModelForm):
         fields = ['title',
                   'short_desc',
                   'description',
+                  'features_benefits',
                   'category',
                   'cost_per_unit',
                   'savings',
                   'num_units',
+                  'savings_per_unit',
                   'start_date',
                   'end_date',
                   'delivery_method',
@@ -45,8 +48,8 @@ class CreateDealForm(BootstrapModelForm):
         labels = {
                 'short_desc': 'Short description',
                 'num_units': 'Units available',
-                'min_pledge_amount': 'Minimum pledging amount'
-
+                'min_pledge_amount': 'Minimum total number of pledges',
+                'features_benefits': 'Features and benefits',
         }
 
         error_messages = {

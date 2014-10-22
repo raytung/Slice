@@ -35,12 +35,14 @@
 
       <h3> Description </h3>
       <p> {{deal.description}}  </p>
-
+      <h4> Features and Benefits <h4>
+      <p> {{deal.features_benefits}}  </p>
       <p><strong>Due Date:</strong> {{deal.end_date}} </p>
       <p><strong>Price:</strong> ${{deal.cost_per_unit}} </p>
+      <p><strong>Savings involved per unit:</strong> ${{deal.savings_per_unit}} </p>
       <p><strong>Units left:</strong> {{units_left}}
       <p><strong>Delivery method:</strong> {{deal.delivery_method}}</p>
-      <p><strong>Minimum pledge amount:</strong> {{deal.min_pledge_amount}}</p>
+      <p><strong>Minimum Total Pledges Required:</strong> {{deal.min_pledge_amount}}</p>
 
 
 

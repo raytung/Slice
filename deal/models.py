@@ -48,14 +48,14 @@ from django.core.exceptions import ValidationError
 class Deal(models.Model):
     #User modifiable
    title = models.CharField(max_length=128, unique=False)
-   short_desc = models.CharField(max_length=200, default="No Description")
-   description = models.TextField(max_length=1000)
-
+   short_desc = models.CharField(max_length=200, default=" ")
+   description = models.TextField(max_length=800)
+   features_benefits = models.TextField(max_length=500, default= " ")
    #decimal field as opposed to floatfield http://stackoverflow.com/questions/2569015/django-floatfield-or-decimalfield-for-currency
    cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    num_units = models.PositiveIntegerField()
    available_units = models.PositiveIntegerField()
-   savings = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
+   savings_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    start_date = models.DateTimeField(auto_now=False, help_text="dd/MM/YYYY hh:mm")
    end_date = models.DateTimeField(auto_now=False, help_text="dd/MM/YYYY hh:mm")
    '''
