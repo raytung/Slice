@@ -9,14 +9,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 #https://docs.djangoproject.com/en/1.7/topics/db/queries/#complex-lookups-with-q-objects
-from django.db.models import Q
+from django.db.models import Q, Avg
 
 #Pinax
 from account import urls
 
 #Models
-from deal.forms  import CreateDealForm, SearchDealForm
-from deal.models import Deal
+from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm
+from deal.models import Deal, Rating
 from django.contrib.auth.models import User
 from UserProfile.models import Profile, History
 from Pledge.forms import CommitmentForm
@@ -108,7 +108,8 @@ def detail(request, pk):
     current_viewer = None if not signed_in else Profile.objects.get(account_id=request.user.id)
     deal_owner = User.objects.get(id=found_deal.owner_id)
     pledge_form = CommitmentForm()
-
+    rate_form = RateDealForm()
+    
 
     # don't want double history on bookmarking/pledging
     # will have double history on refresh though
@@ -136,6 +137,15 @@ def detail(request, pk):
         current_viewer.bookmarks.add(found_deal)
     elif 'remove-bookmark' in request.POST:
         current_viewer.bookmarks.remove(found_deal)
+    elif 'rate-deal' in request.POST:
+        rate_form = RateDealForm(request.POST)
+        if rate_form.is_valid():
+            try:
+                rate = Rating.objects.get(deal=found_deal, user=current_viewer)
+            except ObjectDoesNotExist:
+               rate = Rating.objects.create(deal=found_deal, user=current_viewer)
+            rate.rating = rate_form.cleaned_data['rating']
+            rate.save()
 
     bookmark = []
     if signed_in and current_viewer:
@@ -147,10 +157,21 @@ def detail(request, pk):
         pledge_form = None
         has_pledged = False
 
+    current_rating = Rating.objects.filter(deal=found_deal)
+
+    if current_rating:
+        avg_rating = current_rating.aggregate(Avg('rating'))
+        avg_rating = avg_rating['rating__avg']
+    else:
+        avg_rating = "This deal has no ratings yet. Be the first one to rate it!"
+
+
     context_dict = {'deal': found_deal,
                     'owner': deal_owner,
                     'pledge_form': pledge_form,
                     'has_pledged': has_pledged,
                     'bookmark': bookmark,
-                    'signed_in': signed_in}
+                    'signed_in': signed_in,
+                    'rate_form': rate_form,
+                    'avg_rating': avg_rating}
     return render(request, 'deal_detail.html', context_dict)
