@@ -98,13 +98,12 @@ Database synchronization:     `python manage.py syncdb`
 ####Branches     
 To create a new branch     
 
-      `git checkout -b <new-branch-name> `   
+      git checkout -b <new-branch-name>   
 
 To switch to another branch    
 
-      `git checkout <branch-name>`    
+      git checkout <branch-name>    
 
 To push to your branch     
 
-     `git push origin <branch-name>`     
-
+     git push origin <branch-name>
