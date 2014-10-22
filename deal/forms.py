@@ -32,14 +32,12 @@ class CreateDealForm(BootstrapModelForm):
                   'features_benefits',
                   'category',
                   'cost_per_unit',
-                  'savings',
                   'num_units',
                   'savings_per_unit',
                   'start_date',
                   'end_date',
                   'delivery_method',
                   'min_pledge_amount',
-                  'savings'
                   ]
 
         # If you want to override the default label names

@@ -221,5 +221,7 @@ AUTHENTICATION_BACKENDS = [
     "account.auth_backends.UsernameAuthenticationBackend",
 ]
 
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+#uncomment these when push to heroku
+
+#import dj_database_url
+#DATABASES['default'] =  dj_database_url.config()
