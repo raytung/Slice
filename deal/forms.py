@@ -64,7 +64,6 @@ class SearchDealForm(BootstrapForm):
 
    start_date = forms.DateTimeField(required=False)
    end_date = forms.DateTimeField(required=False)
-   #end_date = forms.DateTimeField(min_value=datetime.datetime.now().date(), required=False)
    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False)
 
 class RateDealForm(BootstrapModelForm):

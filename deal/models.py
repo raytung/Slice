@@ -55,8 +55,8 @@ class Deal(models.Model):
    num_units = models.PositiveIntegerField()
    available_units = models.PositiveIntegerField()
    savings_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
-   start_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY")
-   end_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY")
+   start_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
+   end_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
    '''
        Specifies the state of each deal.
        the first element of each tuple is the actual data stored in the database.
