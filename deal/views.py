@@ -173,7 +173,11 @@ def detail(request, pk):
     is_expired = False if found_deal.end_date >= timezone.now() else True
 
     claimed_units = Commitment.objects.filter(deal_id=found_deal.id).aggregate(Sum('units'))
-    units_left = found_deal.num_units - claimed_units['units__sum']
+    #in case no claimed units yet
+    if claimed_units['units__sum'] == None:
+        units_left = found_deal.num_units
+    else:
+        units_left = found_deal.num_units - claimed_units['units__sum']
 
     context_dict = {'deal': found_deal,
                     'owner': deal_owner,
