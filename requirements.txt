@@ -8,3 +8,4 @@ pyyaml
 django-widget-tweaks
 psycopg2
 dj-database-url
+mandrill>=1.0.6
