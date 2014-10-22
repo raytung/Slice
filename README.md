@@ -106,4 +106,8 @@ To switch to another branch
 
 To push to your branch     
 
-     git push origin <branch-name>
+     git push origin <branch-name>    
+
+To update your branch to align with master    
+
+    git pull origin master   
