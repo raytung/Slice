@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 #https://docs.djangoproject.com/en/1.7/topics/db/queries/#complex-lookups-with-q-objects
-from django.db.models import Q, Avg
+from django.db.models import Q, Avg, Sum
 
 #Pinax
 from account import urls
@@ -67,6 +67,10 @@ def index(request):
 
     return render_to_response('deal_index.html', context_dict, context)
 
+def is_valid_dates(start, end):
+    return start >= timezone.now() and end > timezone.now() and start < end
+
+
 def create_deal_check_login(request):
     if not request.user.is_authenticated():
     #redirect to login page
@@ -109,7 +113,7 @@ def detail(request, pk):
     deal_owner = User.objects.get(id=found_deal.owner_id)
     pledge_form = CommitmentForm()
     rate_form = RateDealForm()
-    
+
 
     # don't want double history on bookmarking/pledging
     # will have double history on refresh though
@@ -124,6 +128,7 @@ def detail(request, pk):
     if 'submit-pledge' in request.POST:
         pledge_form = CommitmentForm(request.POST)
         if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
+            print "hello"
             pledge = pledge_form.save(commit=False)
             pledge.last_modified_date= timezone.now()
             pledge.user = current_viewer
@@ -165,6 +170,10 @@ def detail(request, pk):
     else:
         avg_rating = "This deal has no ratings yet. Be the first one to rate it!"
 
+    is_expired = False if found_deal.end_date >= timezone.now() else True
+
+    claimed_units = Commitment.objects.filter(deal_id=found_deal.id).aggregate(Sum('units'))
+    units_left = found_deal.num_units - claimed_units['units__sum']
 
     context_dict = {'deal': found_deal,
                     'owner': deal_owner,
@@ -173,5 +182,7 @@ def detail(request, pk):
                     'bookmark': bookmark,
                     'signed_in': signed_in,
                     'rate_form': rate_form,
-                    'avg_rating': avg_rating}
+                    'avg_rating': avg_rating,
+                    'is_expired': is_expired,
+                    'units_left': units_left}
     return render(request, 'deal_detail.html', context_dict)
