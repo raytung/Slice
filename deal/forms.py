@@ -10,6 +10,15 @@ from django.utils import timezone
 
 #inherit Bootstrapform
 class CreateDealForm(BootstrapModelForm):
+    start_date = forms.DateTimeField(input_formats=['%d/%m/%Y',
+                                              '%d/%m/%Y %H:%M',
+                                              '%d-%m-%Y',
+                                              '%d-%m-%Y %H:%M'])
+
+    end_date = forms.DateTimeField(input_formats=['%d/%m/%Y',
+                                              '%d/%m/%Y %H:%M',
+                                              '%d-%m-%Y',
+                                              '%d-%m-%Y %H:%M'])
 
     '''
         Defines the Meta data of your form here. (See your models.py)
@@ -21,6 +30,7 @@ class CreateDealForm(BootstrapModelForm):
                   'description',
                   'category',
                   'cost_per_unit',
+                  'savings',
                   'num_units',
                   'start_date',
                   'end_date',
@@ -40,8 +50,8 @@ class CreateDealForm(BootstrapModelForm):
         }
 
         error_messages = {
-                'start_date':{'invalid': 'Invalid date format. Make sure it is in mm/dd/yyyy'},
-                'end_date'  :{'invalid': 'Invalid date format. Make sure it is in mm/dd/yyyy'},
+                'start_date':{'invalid': 'Invalid date format. Make sure it is in dd/mm/yyyy'},
+                'end_date'  :{'invalid': 'Invalid date format. Make sure it is in dd/mm/yyyy'},
                 'cost_per_unit':{'invalid': 'Cost cannot be less than 0!'},
                 }
 
