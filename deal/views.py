@@ -248,4 +248,20 @@ def edit_deal (request, pk):
                                               'deal': deal_entry
                                               })
 
+def deal_view_pledges(request, pk):
+    if not request.user.is_authenticated():
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path)
+    deal_entry = Deal.objects.get(id=pk)
+    if request.user.id != deal_entry.owner_id:
+        error_message = "You do not have access rights this page"
+        return render(request, 'deal_view_pledges.html', {'error_message':error_message})
+
+    user_profiles = Profile.objects.filter(commitment__deal_id=pk)
+    pledges = Commitment.objects.filter(deal_id=deal_entry)
+
+    context_dict = {'pledges': pledges,
+                    'user_profiles': user_profiles}
+
+    return render(request, 'deal_view_pledges.html', context_dict)
 
