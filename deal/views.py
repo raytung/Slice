@@ -205,12 +205,15 @@ def detail(request, pk):
     return render(request, 'deal_detail.html', context_dict)
 
 
-def edit_deal (request, pk): 
+def edit_deal (request, pk):
     if not request.user.is_authenticated():
         #redirect to login page
-        return HttpResponseRedirect('/account/login?next=' + request.path )
+        return HttpResponseRedirect('/account/login?next=' + request.path)
 
     deal_entry = Deal.objects.get(id=pk)
+    if request.user.id != deal_entry.owner_id:
+        error_message = "You do not have right to modify this deal"
+        return render(request, 'edit_deal.html', {'error_message':error_message})
     if request.method == 'POST':
         form = EditDealForm(request.POST, request.FILES, instance=deal_entry)
 
@@ -231,7 +234,7 @@ def edit_deal (request, pk):
                                  'delivery_method':deal_entry.delivery_method,
                                  'thumbnail': deal_entry.thumbnail
                                  })
-   
+
     return render(request, 'edit_deal.html', {'edit_form': form,
                                               'deal': deal_entry
                                               })
