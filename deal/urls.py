@@ -29,6 +29,7 @@ urlpatterns = patterns('',
 		# <root domain>/deal/ will map to our index
         url(r'^$', views.index, name="deals_index"),
         url(r'^create', views.create_deal_check_login, name="deal_create"),
+        url(r'^help', TemplateView.as_view(template_name="deal_help.html"), name="deal_help"),
         url(deal_detail_regex+"$", views.detail, name="deal_detail"),
         url(deal_detail_regex+"edit/$", views.edit_deal, name = "deal_edit"),
         url(deal_detail_regex+"pledges/$", views.deal_view_pledges, name = "deal_view_pledges"),
