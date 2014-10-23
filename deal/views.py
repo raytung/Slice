@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http      import HttpResponse, HttpResponseRedirect
 from django.template  import RequestContext
 from django.shortcuts import render_to_response
@@ -15,12 +15,13 @@ from django.db.models import Q, Avg, Sum
 from account import urls
 
 #Models
-from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm
+from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm, UploadImageForm, EditDealForm
 from deal.models import Deal, Rating
 from django.contrib.auth.models import User
 from UserProfile.models import Profile, History
 from Pledge.forms import CommitmentForm
 from Pledge.models import Commitment
+
 
 def getStringFromInput(form, s):
     """ Retrieves the string value from the input field in the given form  """
@@ -48,7 +49,7 @@ def index(request):
         #https://docs.djangoproject.com/en/dev/ref/models/querysets/
         q = Q()
         if search_key:
-            q |= Q(title__contains=search_key)
+            q |= Q(title__iexact=search_key)
             q |= Q(short_desc__contains=search_key)
             q |= Q(description__contains=search_key)
 
@@ -81,38 +82,37 @@ def create_deal_check_login(request):
     search_form = SearchDealForm()
 
     if request.method == 'POST':
-       form = CreateDealForm(request.POST)
+       form = CreateDealForm(request.POST, request.FILES)
+
        if form.is_valid():
            deal = form.save(commit=False)
            deal.owner_id = request.user.id
            deal.available_units = deal.num_units
+           img = request.FILES.get('thumbnail', None)
+           deal.thumbnail = img if img else "default.svg"
            deal.save()
            success = True
+       else:
+            print form.errors
     return render(request, 'create_deal.html', { 'form': form,
                                                  'request': request,
                                                  'search_form': search_form,
                                                  'valid_form': success},)
-
-def is_valid_pledge(pledge_form, deal):
-    time_commited = timezone.now()
-    units = pledge_form.cleaned_data['units']
-    return (deal.end_date >= time_commited and \
-        deal.available_units >= units and \
-        deal.min_pledge_amount <= units)
-
 
 def detail(request, pk):
     try:
         found_deal = Deal.objects.get(id=pk)
     except:
         found_deal = None
-    if not found_deal: return render(request, 'deal_detail.html', {'deal':found_deal})
+    if not found_deal: return render(request, 'deal_detail.html', {'deal':found_deal, 
+                                                                   'error_message': "No deal is found. Did you enter the correct URL?"})
 
     signed_in = request.user.is_authenticated()
     current_viewer = None if not signed_in else Profile.objects.get(account_id=request.user.id)
     deal_owner = User.objects.get(id=found_deal.owner_id)
     pledge_form = CommitmentForm()
     rate_form = RateDealForm()
+    error_message = None
 
 
     # don't want double history on bookmarking/pledging
@@ -125,19 +125,34 @@ def detail(request, pk):
     except ObjectDoesNotExist:
         has_pledged = False
 
+    claimed_units = Commitment.objects.filter(deal_id=found_deal.id).aggregate(Sum('units'))
+    #in case no claimed units yet
+    if claimed_units['units__sum'] == None:
+        units_left = found_deal.num_units
+    else:
+        units_left = found_deal.num_units - claimed_units['units__sum']
+
     if 'submit-pledge' in request.POST:
         pledge_form = CommitmentForm(request.POST)
-        if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
-            print "hello"
-            pledge = pledge_form.save(commit=False)
-            pledge.last_modified_date= timezone.now()
-            pledge.user = current_viewer
-            pledge.deal = found_deal
-            pledge.save()
+        if pledge_form.is_valid():
+            request_units = pledge_form.cleaned_data['units']
+            now = timezone.now()
+            if request_units > units_left:
+                error_message = "There are not enough units to go around. Please reduce your units"
+            elif now > found_deal.end_date:
+                error_message = "You cannot pledge anymore. The deal has expired!"
+            elif found_deal.start_date > now:
+                error_message = "You cannot pledge yet. Please wait till the deal starts!"
+            elif found_deal.min_pledge_amount > request_units:
+                error_message = "You need to pledge at least " + str(deal.min_pledge_amount) + " unit!"
+            else:
+                pledge = pledge_form.save(commit=False)
+                pledge.last_modified_date= timezone.now()
+                pledge.user = current_viewer
+                pledge.deal = found_deal
+                pledge.save()
 
-            found_deal.available_units -= pledge.units
-            found_deal.save()
-            has_pledged = True
+                has_pledged = True
     elif 'bookmark' in request.POST:
         current_viewer.bookmarks.add(found_deal)
     elif 'remove-bookmark' in request.POST:
@@ -170,14 +185,10 @@ def detail(request, pk):
     else:
         avg_rating = "This deal has no ratings yet. Be the first one to rate it!"
 
-    is_expired = False if found_deal.end_date >= timezone.now() else True
+    is_expired = (found_deal.end_date < timezone.now())
 
-    claimed_units = Commitment.objects.filter(deal_id=found_deal.id).aggregate(Sum('units'))
-    #in case no claimed units yet
-    if claimed_units['units__sum'] == None:
-        units_left = found_deal.num_units
-    else:
-        units_left = found_deal.num_units - claimed_units['units__sum']
+    if is_expired: error_message = "Deal has expired"
+
 
     context_dict = {'deal': found_deal,
                     'owner': deal_owner,
@@ -188,5 +199,41 @@ def detail(request, pk):
                     'rate_form': rate_form,
                     'avg_rating': avg_rating,
                     'is_expired': is_expired,
-                    'units_left': units_left}
+                    'units_left': units_left,
+                    'user': request.user,
+                    'error_message': error_message}
     return render(request, 'deal_detail.html', context_dict)
+
+
+def edit_deal (request, pk): 
+    if not request.user.is_authenticated():
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
+
+    deal_entry = Deal.objects.get(id=pk)
+    if request.method == 'POST':
+        form = EditDealForm(request.POST, request.FILES, instance=deal_entry)
+
+        if form.is_valid():
+            form.save()
+            return redirect('profile_mydeals')
+    else:
+        form = EditDealForm(initial={'title':deal_entry.title,
+                                 'short_desc':deal_entry.short_desc,
+                                 'description':deal_entry.description,
+                                 'category':deal_entry.category,
+                                 'cost_per_unit':deal_entry.cost_per_unit,
+                                 'num_units':deal_entry.num_units,
+                                 'available_units':deal_entry.available_units,
+                                 'savings_per_unit':deal_entry.savings_per_unit,
+                                 'start_date':deal_entry.start_date,
+                                 'end_date':deal_entry.end_date,
+                                 'delivery_method':deal_entry.delivery_method,
+                                 'thumbnail': deal_entry.thumbnail
+                                 })
+   
+    return render(request, 'edit_deal.html', {'edit_form': form,
+                                              'deal': deal_entry
+                                              })
+
+

@@ -5,11 +5,12 @@
   {% for deal in deals %}
 <div class="media">
   <a class="pull-left" href="#">
-    <img class="media-object" src="/static/images/default.svg" >
+    <img class="media-objects" src="/site_media/media/{{deal.thumbnail}}">
     </a>
     <div class="media-body">
       <h4 class="media-heading">
         <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
+        <a href = "{% url 'deal_edit' deal.id%}">edit</a>  
       </h4>
       <strong>Created on </strong> {{deal.time_posted}} <br/>
       <strong>Last Modified: </strong> {{deal.last_modified_date}} <br/>

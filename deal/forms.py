@@ -6,7 +6,7 @@ import datetime
 
 #self defined
 from Slice.forms import BootstrapModelForm, BootstrapForm
-from deal.models import Deal, Category, Rating
+from deal.models import Deal, Category, Rating, DealImage
 from django.utils import timezone
 
 #inherit Bootstrapform
@@ -38,6 +38,7 @@ class CreateDealForm(BootstrapModelForm):
                   'end_date',
                   'delivery_method',
                   'min_pledge_amount',
+                  'thumbnail'
                   ]
 
         # If you want to override the default label names
@@ -70,11 +71,15 @@ class CreateDealForm(BootstrapModelForm):
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
         now = timezone.now()
-        if start_date < now:
+        if start_date == None:
+            self._errors['start_date'] = self.error_class([ 'Please enter a date'])
+        if end_date == None:
+            self._errors['end_date'] = self.error_class([ 'Please enter a date'])
+        if start_date and start_date < now:
             self._errors['start_date'] = self.error_class([ 'Start date cannot be earlier than now'])
-        elif end_date < now:
+        elif end_date and end_date < now:
             self._errors['end_date'] = self.error_class([ 'End date cannot be earlier than now'])
-        elif end_date < start_date:
+        elif start_date and end_date and end_date < start_date:
             self._errors['end_date'] = self.error_class(['End date cannot be earlier than start date'])
             self._errors['start_date'] = self.error_class(['End date cannot be earlier than start date'])
         return cleaned_data
@@ -95,3 +100,28 @@ class RateDealForm(BootstrapModelForm):
     class Meta:
         model = Rating
         fields = ['rating']
+
+class UploadImageForm(BootstrapModelForm):
+    class Meta:
+        model = DealImage
+        fields = ['image']
+
+class EditDealForm(BootstrapModelForm):
+  thumbnail = forms.FileField()
+  class Meta:
+    model = Deal
+    fields = ['title', 
+              'short_desc',
+              'description',
+              'category',
+              'cost_per_unit',
+              'num_units',
+              'available_units',
+              'savings_per_unit',
+              'start_date',
+              'end_date',
+              'delivery_method',
+              'thumbnail'
+              ]
+    labels = {'short_desc': 'Short Description',
+              'num_units' : 'Number Of Units'}

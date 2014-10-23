@@ -13,7 +13,8 @@
       </div>
       {% endif %}
       {% load widget_tweaks%}
-    <form role="form" method="post" action="{% url 'deal_create' %}">
+     
+    <form role="form" method="post" action="{% url 'deal_create' %}" enctype="multipart/form-data" data-ajax="false">
       {% csrf_token %}
       {% for field in form %}
         {% if field.errors %}
@@ -31,8 +32,7 @@
 
 
         </div>
-              {% endfor %}
-
+              {% endfor %}  
       <input type="submit" value="Create!" class="btn btn-default" name="submit-deal" />
     </form>
   {% endif %}
