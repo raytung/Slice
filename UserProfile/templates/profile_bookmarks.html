@@ -1,6 +1,13 @@
 {% extends "profile_base.html" %}
 
 {% block content %}
+Sort by:
+<ol class="breadcrumb">
+  <li><a href="?sort=price_lth">Price (lowest to highest)</a></li>
+  <li><a href="?sort=price_htl">Price (highest to lowest)</a></li>
+  <li><a href="?sort=alpha_lth">Title (a-z)</a></li>
+    <li class="active">Data</li>
+</ol>
 
 {% for deal in deals %}
 <div class="media">

@@ -176,13 +176,28 @@ def myslice(request):
 
     return render(request, 'profile_myslice.html', context_dict)
 
-def bookmarks(request):
+def bookmarks(request, **kwargs):
     if not request.user.is_authenticated():
         #redirect to login page
         return HttpResponseRedirect('/account/login?next=' + request.path )
 
     current_viewer = Profile.objects.get(account_id=request.user.id)
     bookmark = current_viewer.bookmarks.all()
+    sort = request.GET.get('order', None)
+
+    if sort == "price_lth":
+        bookmark.order_by('price_per_unit')
+    elif sort == "price_htl":
+        bookmark.order_by('-price_per_unit')
+    elif sort == "end_lth":
+        bookmark.order_by('end_date')
+    elif sort =="end_htl":
+        bookmark.order_by('-end_date')
+    elif sort == "alpha_lth":
+        bookmark.order_by('title')
+    elif sort == "alpha_htl":
+        bookmark.order_by('-title')
+
 
     piginated_obj, last_page = get_piginator(bookmark, request)
 
