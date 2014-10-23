@@ -8,3 +8,6 @@ pyyaml
 django-widget-tweaks
 pillow
 django-resized
+psycopg2
+dj-database-url
+sendgrid>=0.5.0

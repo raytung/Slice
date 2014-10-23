@@ -40,6 +40,9 @@ urlpatterns = patterns("",
     url(r"^account/", include("account.urls")),
     url(r"^profile/", include("UserProfile.urls")),
     url(r"^deals/", include('deal.urls')),
+    url(r"^about/$", TemplateView.as_view(template_name="about_us.html"), name="about"),
+    url(r"^support/$", TemplateView.as_view(template_name="support.html"), name="support"),
+    url(r"^users/", include('Users.urls'))
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

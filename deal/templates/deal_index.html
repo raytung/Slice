@@ -17,7 +17,13 @@
 
 </div>
 
-  {% endfor %}
-<a href="{% url 'deal_create' %}"> Create Deal </a>
+{% endfor %}
+
+{% if not deals%}
+  <div class="alert alert-danger" role="alert">
+    No deals found!
+  </div>
+{% endif %}
+<a href="{% url 'deal_create' %}"><button class="btn btn-default">Create Deal </button></a>
 
 {% endblock %}

@@ -9,7 +9,7 @@
     <div class="col-md-8" id="deal-content">
       {% block content %} <!-- content block -->
 
-      <h1> {{deal.title}}  </h1> provided by {{owner.username}}
+      <h1> {{deal.title}}  </h1> provided by <a href="{% url 'users_detail' owner.id %}">{{owner.username}}</a>
       {% if signed_in%}
       <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
         {% csrf_token %}
@@ -22,22 +22,27 @@
       {% endif %}
       <br/>
       <strong>Rating: </strong> {{avg_rating}} <br/>
+      {% if not is_expired and user.is_authenticated and deal.owner.account_id != user.id %}
       <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
         {% csrf_token %}
         <div class="form-group">
           {{rate_form}}
         </div>
           <input type="submit" value="Rate Deal" class="btn btn-default" name="rate-deal" />
-      </form>
+        </form>
+
+        {% endif %}
 
       <h3> Description </h3>
       <p> {{deal.description}}  </p>
-
+      <h4> Features and Benefits </h4>
+      <p> {{deal.features_benefits}}  </p>
       <p><strong>Due Date:</strong> {{deal.end_date}} </p>
       <p><strong>Price:</strong> ${{deal.cost_per_unit}} </p>
-      <p><strong>Units left:</strong> {{deal.available_units}}
+      <p><strong>Savings involved per unit:</strong> ${{deal.savings_per_unit}} </p>
+      <p><strong>Units left:</strong> {{units_left}}
       <p><strong>Delivery method:</strong> {{deal.delivery_method}}</p>
-      <p><strong>Minimum pledge amount:</strong> {{deal.min_pledge_amount}}</p>
+      <p><strong>Minimum Total Pledges Required:</strong> {{deal.min_pledge_amount}}</p>
 
 
 
@@ -54,17 +59,33 @@
     </div>
   </div> <!-- end row -->
 
+  {% if error_message%}
+   <div class="alert alert-danger" role="alert">
+       {{error_message}}
+    </div>
+    {% endif %}
+
+    {% if units_left <= 0 %}
+    <div class="alert alert-info" role="alert"> 
+        This deal has no units left! :( <br/>
+        Thank you for your interest!
+    </div>
+    {% endif %}
+
+    {% if has_pledged %}
+      <div class="alert alert-success" role="alert" style="margin-top: 1em;">
+        You have already pledged! 
+        <a href="{% url 'pledge_edit' deal.id %}"><button class="btn btn-default">Take me to my pledge</button></a>
+      </div>
+    {% endif %}
+
+    {% if not signed_in %}
+      Please signin to make a commitment!
+    {% endif %}
+
+    {% if signed_in and units_left > 0 and not has_pledged and not is_expired %}
   <div class="row">
-
- <h1> Make a Pledge </h1>
-    {% if signed_in%}
-        {% if has_pledged %}
-          <div class="alert alert-success" role="alert" style="margin-top: 1em;">
-            You have already pledged towards this deal!
-          </div>
-          {% endif %} {# end has_pledge #}
-
-        {% if deal.available_units %}
+    <h1> Make a Pledge </h1>
           <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
             {% csrf_token %}
 
@@ -90,26 +111,15 @@
             <input type="submit" value="Cut me a Slice!" class="btn btn-default" name="submit-pledge" />
 
           </form>
-          {% else %} {# if deal.available_units else #}
-            <div class="alert alert-info" role="alert"> 
-              This deal has no units left! :( <br/>
-              Thank you for your interest!
-            </div>
-          {% endif %} {# end if deal.available_units #}
-    {% else %} {# if signed_in else #}
-      Please sign in to pledge
-
-    {% endif %}
 
 
 
   </div> <!-- end row -->
-  {% else %} {# if deal else #}
-   <div class="alert alert-danger" role="alert"> 
-      No deal is found. Did you enter the correct URL?
-   </div>
 
-  {% endif %} {# end if deal#}
+    {% endif %}
+
+  {% endif %} {# end if deal  #}
+
 </div> <!-- end container -->
 {% endblock %}
 
