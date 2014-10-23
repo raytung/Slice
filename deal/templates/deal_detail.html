@@ -74,7 +74,8 @@
 
     {% if has_pledged %}
       <div class="alert alert-success" role="alert" style="margin-top: 1em;">
-            You have already pledged!
+        You have already pledged! 
+        <a href="{% url 'pledge_edit' deal.id %}"><button class="btn btn-default">Take me to my pledge</button></a>
       </div>
     {% endif %}
 

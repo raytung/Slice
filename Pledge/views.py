@@ -29,11 +29,14 @@ def pledge_edit(request, pk):
         error_message = "Deal has already expired. You cannot modify your commitment"
     success = False
     error_message = None
+    units_remained = deal.num_units
+    claimed_units = Commitment.objects.filter(deal_id=deal.id).aggregate(Sum('units'))
+    units_remained -= claimed_units['units__sum']
+
     if 'save-pledge' in request.POST:
         form = CommitmentForm(request.POST, instance=pledge)
         if form.is_valid():
-            claimed_units = Commitment.objects.filter(deal_id=deal.id).aggregate(Sum('units'))
-            if (deal.num_units - claimed_units['units__sum']) < form.cleaned_data['units']:
+            if units_remained < form.cleaned_data['units']:
                 error_message = "The deal does not have enough units to go around! Try reducing your units"
             else:
                 commitment = form.save(commit=False)
@@ -56,4 +59,5 @@ def pledge_edit(request, pk):
                                                 'deal':deal,
                                                 'is_expired': is_expired,
                                                 'saved': success, 
-                                                'error_message': error_message})
+                                                'error_message': error_message,
+                                                'units_remained': units_remained})
