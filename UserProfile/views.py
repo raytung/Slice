@@ -135,7 +135,7 @@ def my_deals(request):
     deals = Deal.objects.filter(owner_id=request.user.id)
     deals = get_sorted_model(request, deals)
     paginated_obj, last_page = get_paginator(deals, request)
-    now = timezone.now()
+    now = timezone.localtime(timezone.now())
 
     context_dict = {'deals': paginated_obj,
                     'last_page': last_page,
@@ -180,7 +180,7 @@ def bookmarks(request, **kwargs):
     bookmark = current_viewer.bookmarks.all()
     bookmark = get_sorted_model(request, bookmark)
     paginated_obj, last_page = get_paginator(bookmark, request)
-    now = timezone.now()
+    now = timezone.localtime(timezone.now())
 
     context_dict = {'deals': paginated_obj,
                     'last_page': last_page,

@@ -25,7 +25,7 @@ def pledge_edit(request, pk):
     if not pledge: return render(request, 'pledge_edit.html', {'pledge': pledge,
                                                                 'error_message': "No commitment found"})
     deal = pledge.deal
-    is_expired = (deal.end_date < timezone.now())
+    is_expired = (deal.end_date < timezone.localtime(timezone.now()))
     if is_expired:
         error_message = "Deal has already expired. You cannot modify your commitment"
     success = False
@@ -41,11 +41,11 @@ def pledge_edit(request, pk):
                 error_message = "The deal does not have enough units to go around! Try reducing your units"
             else:
                 commitment = form.save(commit=False)
-                commitment.last_modified_date = timezone.now()
+                commitment.last_modified_date = timezone.localtime(timezone.now())
                 commitment.save()
                 success = True
     elif 'delete-pledge' in request.POST:
-        if timezone.now() >= deal.end_date:
+        if timezone.localtime(timezone.now()) >= deal.end_date:
             error_message = "You cannot retract now. Deal has ended."
         else:
             pledge.delete()

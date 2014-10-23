@@ -70,7 +70,7 @@ class CreateDealForm(BootstrapModelForm):
         cleaned_data = super(CreateDealForm, self).clean()
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
-        now = timezone.now()
+        now = timezone.localtime(timezone.now())
         if start_date == None:
             self._errors['start_date'] = self.error_class([ 'Please enter a date'])
         if end_date == None:

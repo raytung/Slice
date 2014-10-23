@@ -32,9 +32,7 @@ def getStringFromInput(form, s):
 
 def index(request):
     context = RequestContext(request)
-    deals = Deal.objects.all()
-    print deals
-
+    deals = Deal.objects.all() 
 
     form = SearchDealForm(data=request.GET)
 
@@ -63,7 +61,7 @@ def index(request):
         if category:   q &= Q(category_id__exact=category.id)
 
         deals = Deal.objects.filter(q)
-    now = timezone.now()
+    now = timezone.localtime(timezone.now())
 
     deals = get_sorted_model(request, deals)
     deals, last_page = get_paginator(deals, request)
@@ -78,7 +76,8 @@ def index(request):
     return render_to_response('deal_index.html', context_dict, context)
 
 def is_valid_dates(start, end):
-    return start >= timezone.now() and end > timezone.now() and start < end
+    now = timezone.localtime(timezone.now())
+    return start >= now and end > now and start < end
 
 
 def create_deal_check_login(request):
@@ -145,7 +144,7 @@ def detail(request, pk):
         pledge_form = CommitmentForm(request.POST)
         if pledge_form.is_valid():
             request_units = pledge_form.cleaned_data['units']
-            now = timezone.now()
+            now = timezone.localtime(timezone.now())
             if request_units > units_left:
                 error_message = "There are not enough units to go around. Please reduce your units"
             elif now > found_deal.end_date:
@@ -156,7 +155,7 @@ def detail(request, pk):
                 error_message = "You need to pledge at least " + str(deal.min_pledge_amount) + " unit!"
             else:
                 pledge = pledge_form.save(commit=False)
-                pledge.last_modified_date= timezone.now()
+                pledge.last_modified_date= timezone.localtime(timezone.now())
                 pledge.user = current_viewer
                 pledge.deal = found_deal
                 pledge.save()
@@ -194,7 +193,7 @@ def detail(request, pk):
     else:
         avg_rating = "This deal has no ratings yet. Be the first one to rate it!"
 
-    is_expired = (found_deal.end_date < timezone.now())
+    is_expired = (found_deal.end_date < timezone.localtime(timezone.now()))
 
     if is_expired: error_message = "Deal has expired"
 
@@ -258,10 +257,15 @@ def deal_view_pledges(request, pk):
         return render(request, 'deal_view_pledges.html', {'error_message':error_message})
 
     user_profiles = Profile.objects.filter(commitment__deal_id=pk)
+    users = []
+    for p in user_profiles:
+        found_user = User.objects.get(pk=p.account_id)
+        users.append(found_user)
     pledges = Commitment.objects.filter(deal_id=deal_entry)
 
     context_dict = {'pledges': pledges,
-                    'user_profiles': user_profiles}
+                    'user_profiles': user_profiles,
+                    'users':users}
 
     return render(request, 'deal_view_pledges.html', context_dict)
 
