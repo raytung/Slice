@@ -6,7 +6,7 @@ import datetime
 
 #self defined
 from Slice.forms import BootstrapModelForm, BootstrapForm
-from deal.models import Deal, Category, Rating
+from deal.models import Deal, Category, Rating, DealImage
 from django.utils import timezone
 
 #inherit Bootstrapform
@@ -38,6 +38,7 @@ class CreateDealForm(BootstrapModelForm):
                   'end_date',
                   'delivery_method',
                   'min_pledge_amount',
+                  'thumbnail'
                   ]
 
         # If you want to override the default label names
@@ -99,3 +100,28 @@ class RateDealForm(BootstrapModelForm):
     class Meta:
         model = Rating
         fields = ['rating']
+
+class UploadImageForm(BootstrapModelForm):
+    class Meta:
+        model = DealImage
+        fields = ['image']
+
+class EditDealForm(BootstrapModelForm):
+  thumbnail = forms.FileField()
+  class Meta:
+    model = Deal
+    fields = ['title', 
+              'short_desc',
+              'description',
+              'category',
+              'cost_per_unit',
+              'num_units',
+              'available_units',
+              'savings_per_unit',
+              'start_date',
+              'end_date',
+              'delivery_method',
+              'thumbnail'
+              ]
+    labels = {'short_desc': 'Short Description',
+              'num_units' : 'Number Of Units'}

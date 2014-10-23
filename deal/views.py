@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http      import HttpResponse, HttpResponseRedirect
 from django.template  import RequestContext
 from django.shortcuts import render_to_response
@@ -15,12 +15,13 @@ from django.db.models import Q, Avg, Sum
 from account import urls
 
 #Models
-from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm
+from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm, UploadImageForm, EditDealForm
 from deal.models import Deal, Rating
 from django.contrib.auth.models import User
 from UserProfile.models import Profile, History
 from Pledge.forms import CommitmentForm
 from Pledge.models import Commitment
+
 
 def getStringFromInput(form, s):
     """ Retrieves the string value from the input field in the given form  """
@@ -48,7 +49,7 @@ def index(request):
         #https://docs.djangoproject.com/en/dev/ref/models/querysets/
         q = Q()
         if search_key:
-            q |= Q(title__contains=search_key)
+            q |= Q(title__iexact=search_key)
             q |= Q(short_desc__contains=search_key)
             q |= Q(description__contains=search_key)
 
@@ -81,13 +82,18 @@ def create_deal_check_login(request):
     search_form = SearchDealForm()
 
     if request.method == 'POST':
-       form = CreateDealForm(request.POST)
+       form = CreateDealForm(request.POST, request.FILES)
+
        if form.is_valid():
            deal = form.save(commit=False)
            deal.owner_id = request.user.id
            deal.available_units = deal.num_units
+           img = request.FILES.get('thumbnail', None)
+           deal.thumbnail = img if img else "default.svg"
            deal.save()
            success = True
+       else:
+            print form.errors
     return render(request, 'create_deal.html', { 'form': form,
                                                  'request': request,
                                                  'search_form': search_form,
@@ -197,3 +203,37 @@ def detail(request, pk):
                     'user': request.user,
                     'error_message': error_message}
     return render(request, 'deal_detail.html', context_dict)
+
+
+def edit_deal (request, pk): 
+    if not request.user.is_authenticated():
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
+
+    deal_entry = Deal.objects.get(id=pk)
+    if request.method == 'POST':
+        form = EditDealForm(request.POST, request.FILES, instance=deal_entry)
+
+        if form.is_valid():
+            form.save()
+            return redirect('profile_mydeals')
+    else:
+        form = EditDealForm(initial={'title':deal_entry.title,
+                                 'short_desc':deal_entry.short_desc,
+                                 'description':deal_entry.description,
+                                 'category':deal_entry.category,
+                                 'cost_per_unit':deal_entry.cost_per_unit,
+                                 'num_units':deal_entry.num_units,
+                                 'available_units':deal_entry.available_units,
+                                 'savings_per_unit':deal_entry.savings_per_unit,
+                                 'start_date':deal_entry.start_date,
+                                 'end_date':deal_entry.end_date,
+                                 'delivery_method':deal_entry.delivery_method,
+                                 'thumbnail': deal_entry.thumbnail
+                                 })
+   
+    return render(request, 'edit_deal.html', {'edit_form': form,
+                                              'deal': deal_entry
+                                              })
+
+

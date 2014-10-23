@@ -15,7 +15,7 @@ else:
     max_id = 0
 length = len(str(max_id))
 
-deal_detail_regex = r'^([0-9]{1,'+ str(length)  +'})/$'
+deal_detail_regex = r'^([0-9]{1,'+ str(length)  +'})/'
 
 
 '''
@@ -28,5 +28,6 @@ urlpatterns = patterns('',
 		# <root domain>/deal/ will map to our index
         url(r'^$', views.index, name="deals_index"),
         url(r'^create', views.create_deal_check_login, name="deal_create"),
-        url(deal_detail_regex, views.detail, name="deal_detail")
+        url(deal_detail_regex+"$", views.detail, name="deal_detail"),
+        url(deal_detail_regex+"edit/$", views.edit_deal, name = "deal_edit"),
         ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
