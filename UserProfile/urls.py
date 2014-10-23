@@ -7,15 +7,20 @@ from Pledge.models import Commitment
 
 #performance!!
 #also, will have problem if no deals in database
-max_id = Commitment.objects.all().order_by("-id")[0].id
+
+commitment = Commitment.objects.all()
+max_id = 0
+if commitment:
+        max_id = Commitment.objects.all().order_by("-id")[0].id
 length = len(str(max_id))
+
 
 pledge_detail_regex = r'([0-9]{1,'+ str(length)  +'})/'
 
 
 
 urlpatterns = patterns('',
-		# <root domain>/deal/ will map to our index
+                # <root domain>/deal/ will map to our index
         url(r'^$', views.profile_check_login, name="profile_index"),
         url(r'^edit/description/$', views.edit_description, name="profile_edit_description"),
         url(r'^edit/contact/$', views.edit_contact, name="profile_edit_contact"),

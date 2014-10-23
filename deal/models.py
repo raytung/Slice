@@ -118,4 +118,4 @@ class Rating(models.Model):
 
 class DealImage(models.Model):
   deal = models.ForeignKey(Deal, related_name="image")
-  image = models.ImageField(upload_to = 'upload_image/', null = True)
+  image = models.ImageField(upload_to = 'upload_image/', null = True, blank = True)

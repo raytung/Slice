@@ -16,7 +16,7 @@ from account import urls
 
 #Models
 from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm, UploadImageForm, EditDealForm
-from deal.models import Deal, Rating
+from deal.models import Deal, Rating, DealImage
 from django.contrib.auth.models import User
 from UserProfile.models import Profile, History
 from Pledge.forms import CommitmentForm
@@ -210,16 +210,34 @@ def edit_deal (request, pk):
         #redirect to login page
         return HttpResponseRedirect('/account/login?next=' + request.path)
 
+
     deal_entry = Deal.objects.get(id=pk)
+    deal_img = DealImage.objects.filter(deal_id=deal_entry.pk)
+
     if request.user.id != deal_entry.owner_id:
         error_message = "You do not have right to modify this deal"
         return render(request, 'edit_deal.html', {'error_message':error_message})
+   
     if request.method == 'POST':
         form = EditDealForm(request.POST, request.FILES, instance=deal_entry)
+        image_form = UploadImageForm(request.POST, request.FILES)
 
-        if form.is_valid():
+
+        if form.is_valid() and image_form.is_valid():
+            img_deal = image_form.save(commit=False)
+            img_deal.deal_id = deal_entry.id
+
+
+            img = request.FILES.get('image', None)
+            img_deal.image=img
+               
+            print img    
             form.save()
+            print image_form
+            img_deal.save()
+
             return redirect('profile_mydeals')
+       
     else:
         form = EditDealForm(initial={'title':deal_entry.title,
                                  'short_desc':deal_entry.short_desc,
@@ -234,8 +252,13 @@ def edit_deal (request, pk):
                                  'delivery_method':deal_entry.delivery_method,
                                  'thumbnail': deal_entry.thumbnail
                                  })
+        
+       
+        image_form = UploadImageForm(initial={'image':  deal_img})
+       
 
     return render(request, 'edit_deal.html', {'edit_form': form,
+                                              'image_edit' : image_form,
                                               'deal': deal_entry
                                               })
 

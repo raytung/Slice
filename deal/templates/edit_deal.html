@@ -19,7 +19,15 @@
                 {{field}}
             </div>
             {% endfor %}
+
             
+            {% for field in image_edit %}
+            <div class="form-group">
+                <label>{{field.label}}</label>
+                {{field}}
+            </div>
+            {% endfor %}
+
     		<a href="{% url 'profile_mydeals'%}">
                 <button class="btn btn-default">Cancel</button>
             </a>

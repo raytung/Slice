@@ -106,6 +106,8 @@ class UploadImageForm(BootstrapModelForm):
         model = DealImage
         fields = ['image']
 
+        labels = {'image' : 'Additional Images'}
+
 class EditDealForm(BootstrapModelForm):
   thumbnail = forms.FileField()
   class Meta:
