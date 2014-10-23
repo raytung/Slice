@@ -32,7 +32,7 @@ class SignupForm(forms.Form):
     password = forms.CharField(
         label=_("Password"),
         widget=forms.PasswordInput(render_value=False),
-        min_length=8a
+        min_length=8
     )
     password_confirm = forms.CharField(
         label=_("Password (again)"),
