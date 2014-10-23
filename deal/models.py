@@ -61,10 +61,7 @@ class Deal(models.Model):
    end_date = models.DateTimeField(auto_now=False, help_text="MM/DD/YYYY hh:mm")
 
    thumbnail = ResizedImageField(max_width=64, max_height=64, upload_to = 'upload_image/', null=True, blank=True)    
-   '''
-   thumbnail_height = models.PositiveIntegerField(null=True, blank=True, editable=False, default="64")
-   thumbnail_width = models.PositiveIntegerField(null=True, blank=True, editable=False, default="64")
-   '''
+
 
    '''
        Specifies the state of each deal.
@@ -99,18 +96,6 @@ class Deal(models.Model):
 
     #overriding the default save method.
 
-   def save(self, *args, **kwargs):
-    if not self.thumbnail: return   
-
-    thumbnail = Image.open(self.thumbnail)
-    size = (64, 64)
-    thumbnail = thumbnail.resize(size, Image.ANTIALIAS)
-    thumbnail.save(self.thumbnail.path)
-
-    super(Deal, self).save(*args, **kwargs)
-    #start date cannot be later than end date. Does not save.
-    if self.start_date >= self.end_date:
-      return
 
 
 class SearchTag(models.Model):

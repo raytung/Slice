@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http      import HttpResponse, HttpResponseRedirect
 from django.template  import RequestContext
 from django.shortcuts import render_to_response
@@ -15,7 +15,7 @@ from django.db.models import Q, Avg
 from account import urls
 
 #Models
-from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm, UploadImageForm
+from deal.forms  import CreateDealForm, SearchDealForm, RateDealForm, UploadImageForm, EditDealForm
 from deal.models import Deal, Rating
 from django.contrib.auth.models import User
 from UserProfile.models import Profile, History
@@ -84,8 +84,8 @@ def create_deal_check_login(request):
            deal = form.save(commit=False)
            deal.owner_id = request.user.id
            deal.available_units = deal.num_units
-           deal.thumbnail = request.FILES['thumbnail']
-           #save_file(request.FILES['image'])
+           img = request.FILES.get('thumbnail', None)
+           deal.thumbnail = img if img else "default.svg"
            deal.save()
            success = True
        else:
@@ -171,7 +171,6 @@ def detail(request, pk):
     else:
         avg_rating = "This deal has no ratings yet. Be the first one to rate it!"
  
-
     context_dict = {'deal': found_deal,
                     'owner': deal_owner,
                     'pledge_form': pledge_form,
@@ -184,6 +183,34 @@ def detail(request, pk):
 
 
 def edit_deal (request, pk): 
-    pass
-    
+    if not request.user.is_authenticated():
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path )
+
+    deal_entry = Deal.objects.get(id=pk)
+    if request.method == 'POST':
+        form = EditDealForm(request.POST, request.FILES, instance=deal_entry)
+
+        if form.is_valid():
+            form.save()
+            return redirect('profile_mydeals')
+    else:
+        form = EditDealForm(initial={'title':deal_entry.title,
+                                 'short_desc':deal_entry.short_desc,
+                                 'description':deal_entry.description,
+                                 'category':deal_entry.category,
+                                 'cost_per_unit':deal_entry.cost_per_unit,
+                                 'num_units':deal_entry.num_units,
+                                 'available_units':deal_entry.available_units,
+                                 'savings':deal_entry.savings,
+                                 'start_date':deal_entry.start_date,
+                                 'end_date':deal_entry.end_date,
+                                 'delivery_method':deal_entry.delivery_method,
+                                 'thumbnail': deal_entry.thumbnail
+                                 })
+   
+    return render(request, 'edit_deal.html', {'edit_form': form,
+                                              'deal': deal_entry
+                                              })
+
 

@@ -36,7 +36,6 @@ class CreateDealForm(BootstrapModelForm):
                 'short_desc': 'Short description',
                 'num_units': 'Units available',
                 'min_pledge_amount': 'Minimum pledging amount'
-
         }
 
         error_messages = {
@@ -70,18 +69,27 @@ class RateDealForm(BootstrapModelForm):
         model = Rating
         fields = ['rating']
 
-class UploadImageForm(BootstrapForm):
+class UploadImageForm(BootstrapModelForm):
     class Meta:
         model = DealImage
         fields = ['image']
 
-class EditDealForm(BootstrapForm):
+class EditDealForm(BootstrapModelForm):
+  thumbnail = forms.FileField()
   class Meta:
     model = Deal
     fields = ['title', 
               'short_desc',
               'description',
               'category',
-              'delivery_method'
+              'cost_per_unit',
+              'num_units',
+              'available_units',
+              'savings',
+              'start_date',
+              'end_date',
+              'delivery_method',
+              'thumbnail'
               ]
-      labels = {'short_desc': 'Short description'}
+    labels = {'short_desc': 'Short Description',
+              'num_units' : 'Number Of Units'}
