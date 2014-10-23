@@ -183,20 +183,31 @@ def bookmarks(request, **kwargs):
 
     current_viewer = Profile.objects.get(account_id=request.user.id)
     bookmark = current_viewer.bookmarks.all()
-    sort = request.GET.get('order', None)
+    sort = request.GET.get('sort', None)
+    print sort
 
     if sort == "price_lth":
-        bookmark.order_by('price_per_unit')
+        bookmark = bookmark.order_by('cost_per_unit')
     elif sort == "price_htl":
-        bookmark.order_by('-price_per_unit')
+        bookmark = bookmark.order_by('-cost_per_unit')
     elif sort == "end_lth":
-        bookmark.order_by('end_date')
+        bookmark = bookmark.order_by('end_date')
     elif sort =="end_htl":
-        bookmark.order_by('-end_date')
+        bookmark = bookmark.order_by('-end_date')
     elif sort == "alpha_lth":
-        bookmark.order_by('title')
+        bookmark = bookmark.order_by('-title')
     elif sort == "alpha_htl":
-        bookmark.order_by('-title')
+        bookmark = bookmark.order_by('title')
+    elif sort == "end_date_lth":
+        bookmark = bookmark.order_by('end_date')
+    elif sort == "end_date_htl":
+        bookmark = bookmark.order_by('-end_date')
+    elif sort == "start_date_lth":
+        bookmark = bookmark.order_by('start_date')
+    elif sort == "start_date_htl":
+        bookmark = bookmark.order_by('-start_date')
+
+    print bookmark
 
 
     piginated_obj, last_page = get_piginator(bookmark, request)
