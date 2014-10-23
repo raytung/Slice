@@ -14,12 +14,12 @@ class CreateDealForm(BootstrapModelForm):
     start_date = forms.DateTimeField(input_formats=['%d/%m/%Y',
                                               '%d/%m/%Y %H:%M',
                                               '%d-%m-%Y',
-                                              '%d-%m-%Y %H:%M'])
+                                              '%d-%m-%Y %H:%M'], help_text="dd/mm/yyyy hh:mm")
 
     end_date = forms.DateTimeField(input_formats=['%d/%m/%Y',
                                               '%d/%m/%Y %H:%M',
                                               '%d-%m-%Y',
-                                              '%d-%m-%Y %H:%M'])
+                                              '%d-%m-%Y %H:%M'], help_text="dd/mm/yyyy hh:mm")
 
     '''
         Defines the Meta data of your form here. (See your models.py)
@@ -51,8 +51,8 @@ class CreateDealForm(BootstrapModelForm):
         }
 
         error_messages = {
-                'start_date':{'invalid': 'Invalid date format. Make sure it is in dd/mm/yyyy'},
-                'end_date'  :{'invalid': 'Invalid date format. Make sure it is in dd/mm/yyyy'},
+                'start_date':{'invalid': 'Invalid date format. Make sure it is in dd/mm/yyyy hh:mm'},
+                'end_date'  :{'invalid': 'Invalid date format. Make sure it is in dd/mm/yyyy hh:mm'},
                 'cost_per_unit':{'invalid': 'Cost cannot be less than 0!'},
                 }
 
