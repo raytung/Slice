@@ -1,7 +1,12 @@
 {% extends "profile_base.html" %}
 
 {% block content %}
-    
+{% if error_message%}
+<div class="alert alert-danger" role="alert">
+  {{error_message}}
+</div>
+{% endif %}
+{% if not error_message %}
     <div class="panel panel-default" id="account-details">
         <div class="panel-heading">Edit Deal</div>
 
@@ -21,5 +26,6 @@
             <input type="submit" value="Save" class="btn btn-default" name="save-deal-details" id="account-save-btn" />
         </form>
     </div>
-</div>
+  </div>
+  {% endif %}
 {% endblock %}

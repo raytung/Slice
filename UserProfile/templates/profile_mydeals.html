@@ -1,7 +1,7 @@
 {% extends "profile_base.html" %}
 
 {% block content %}
-
+{% include 'sort_button.html'%}
   {% for deal in deals %}
 <div class="media">
   <a class="pull-left" href="#">
@@ -11,6 +11,14 @@
       <h4 class="media-heading">
         <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
         <a href = "{% url 'deal_edit' deal.id%}">edit</a>  
+      {% if deal.start_date <= now and deal.end_date > now %}
+          <span class="badge alert-success">Active</span>
+      {% elif deal.start_date <= now and deal.end_date <= now %}
+          <span class="badge alert-danger">Ended</span>
+      {% elif deal.start_date > now %}
+          <span class="badge alert-info">Coming soon</span>
+      {% endif %}
+
       </h4>
       <strong>Created on </strong> {{deal.time_posted}} <br/>
       <strong>Last Modified: </strong> {{deal.last_modified_date}} <br/>
