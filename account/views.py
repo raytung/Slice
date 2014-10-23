@@ -772,7 +772,7 @@ class DeleteView(LogoutView):
         return ctx
 
     def get(self, request):
-        now = timezone.now()
+        now = timezone.localtime(timezone.now())
         profile = Profile.objects.get(account_id=request.user.id)
         deals = Deal.objects.filter(owner_id=request.user.id)
         pledge = Commitment.objects.filter(user_id=request.user.id)

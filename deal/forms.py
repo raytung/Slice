@@ -69,14 +69,12 @@ class CreateDealForm(BootstrapModelForm):
 
     def clean(self):
         cleaned_data = super(CreateDealForm, self).clean()
+        now = timezone.localtime(timezone.now())
         start_date = cleaned_data.get("start_date", None)
         end_date = cleaned_data.get("end_date", None)
         cost = cleaned_data.get("cost_per_unit", None)
         non_monetary_condition = cleaned_data.get("non_monetary_condition", None)
         savings = cleaned_data.get("saving_per_unit", None)
-        print cost
-        print non_monetary_condition
-        now = timezone.now()
         if start_date == None:
             self._errors['start_date'] = self.error_class([ 'Please enter a date'])
         if end_date == None:

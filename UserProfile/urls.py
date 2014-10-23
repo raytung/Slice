@@ -25,8 +25,8 @@ urlpatterns = patterns('',
         url(r'^edit/$', views.edit_profile, name="profile_edit"),
         url(r'^mydeals/$', views.my_deals, name="profile_mydeals"),
         url(r'^history/$', views.history, name="profile_history"),
-        url(r'^myslice/'+pledge_detail_regex+'edit/$', Pledge.views.pledge_edit, name="pledge_edit"),
         url(r'^myslice/$', views.myslice, name="profile_myslice"),
+        url(r'^myslice/'+ pledge_detail_regex+'edit/$', Pledge.views.pledge_edit, name="pledge_edit"),
         url(r'^bookmarks/$', views.bookmarks, name="profile_bookmarks"),
         
 )
