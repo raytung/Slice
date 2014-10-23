@@ -69,8 +69,8 @@
             You cannot pledged towards this deal again or pledge to your own deal!
           </div>
           {% endif %} {# end has_pledge #}
-
-          {% if units_left > 0 %}
+          {% if not has_pledged %}
+          {% if units_left > 0%}
           <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
             {% csrf_token %}
 
@@ -101,7 +101,8 @@
               This deal has no units left! :( <br/>
               Thank you for your interest!
             </div>
-          {% endif %} {# end if units_left #}
+            {% endif %} {# end if units_left #}
+            {% endif %}
     {% else %} {# if signed_in else #}
       Please sign in to pledge
 

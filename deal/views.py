@@ -128,7 +128,6 @@ def detail(request, pk):
     if 'submit-pledge' in request.POST:
         pledge_form = CommitmentForm(request.POST)
         if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
-            print "hello"
             pledge = pledge_form.save(commit=False)
             pledge.last_modified_date= timezone.now()
             pledge.user = current_viewer
