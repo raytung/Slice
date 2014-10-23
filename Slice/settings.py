@@ -213,7 +213,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ACCOUNT_OPEN_SIGNUP = True
 ACCOUNT_EMAIL_UNIQUE = True
-ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = False
+ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 ACCOUNT_LOGIN_REDIRECT_URL = "home"
 ACCOUNT_LOGOUT_REDIRECT_URL = "home"
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
@@ -224,5 +224,5 @@ AUTHENTICATION_BACKENDS = [
 
 #uncomment these when push to heroku
 
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+#import dj_database_url
+#DATABASES['default'] =  dj_database_url.config()
