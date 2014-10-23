@@ -32,14 +32,16 @@ def getStringFromInput(form, s):
 
 def index(request):
     context = RequestContext(request)
-    deals = Deal.objects.all() 
+    now = timezone.localtime(timezone.now())
+    deals = Deal.objects.filter(end_date__gte=now)
+    print deals
 
     form = SearchDealForm(data=request.GET)
 
     #if nothing is entered/ selected, display top 5 deals
     #else, search.
 
-    if request.method == 'GET' and form.is_valid():
+    if  'search-deals' in request.GET and form.is_valid():
         search_key = getStringFromInput(form, 'search')
         min_price  = form.cleaned_data['min_price']
         max_price  = form.cleaned_data['max_price']
@@ -61,7 +63,6 @@ def index(request):
         if category:   q &= Q(category_id__exact=category.id)
 
         deals = Deal.objects.filter(q)
-    now = timezone.localtime(timezone.now())
 
     deals = get_sorted_model(request, deals)
     deals, last_page = get_paginator(deals, request)
