@@ -24,7 +24,15 @@
 
 
 </div>
- 
+ {% if error_message %}
+<div class="alert alert-danger" role="alert">
+   <strong> Error: </strong>
+   {{error_message}}
+ </div>
+
+ {% endif %}
+
+
    <form role="form" method="post" action="{% url 'pledge_edit' deal.id %}">
     {% csrf_token %}
     {% for field in form %}
@@ -36,15 +44,7 @@
     {% endfor %}
     <input type="submit" value="Save" class="btn btn-default" name="submit-deal" />
   </form>
- {% else %}
- <div class="alert alert-danger" role="alert">
-   <strong> Error: </strong>
-   {{error_message}}
- </div>
- <a href="{% url 'profile_myslice' %}">
-  <button class="btn btn-default"> Back </button>
- </a>
-
  {% endif %}
+
 
 {% endblock %}
