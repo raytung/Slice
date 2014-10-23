@@ -8,8 +8,9 @@ from deal.models import Deal
 
 #performance!!
 #also, will have problem if no deals in database
-if Deal.objects.all():
-    max_id = Deal.objects.all().order_by("-id")[0].id
+deals = Deal.objects.all()
+if deals:
+    max_id = deals.order_by("-id")[0].id
 else:
     max_id = 0
 length = len(str(max_id))
