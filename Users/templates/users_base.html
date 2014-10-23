@@ -1,0 +1,31 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+
+{% block body %}
+	<div class="container-fluid">
+
+    <div class="row">
+
+
+      <div class="col-md-12" id="deal-content">
+        {% block content %} <!-- content block -->
+  
+    
+        {% endblock %}
+			</div> <!-- end deal-content -->
+		</div> <!-- end row -->
+	</div> <!-- end container -->
+{% endblock %}
+
+
+
+
+<!-- 
+  This is the template for our UserProfile app.
+  If you change this, all webpages in UserProfile that extends this file will be changed.  
+
+  Our content will be automatically rendered in between the content block (see above code)
+
+  -->
+
