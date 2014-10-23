@@ -1,6 +1,8 @@
 from django.db    import models
 from datetime     import datetime
 from django.utils import timezone
+from django_resized import ResizedImageField
+from PIL import Image
 
 # https://docs.djangoproject.com/en/dev/ref/validators/#minvaluevalidator
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -55,6 +57,7 @@ class Deal(models.Model):
    cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    num_units = models.PositiveIntegerField()
    available_units = models.PositiveIntegerField()
+   thumbnail = ResizedImageField(max_width=64, max_height=64, upload_to = 'upload_image/', null=True, blank=True)    
    savings_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
    start_date = models.DateTimeField(auto_now=False, help_text="dd/MM/YYYY hh:mm")
    end_date = models.DateTimeField(auto_now=False, help_text="dd/MM/YYYY hh:mm")
@@ -91,7 +94,6 @@ class Deal(models.Model):
 
     #overriding the default save method.
 
-   
 class SearchTag(models.Model):
     tag_name = models.CharField(max_length=20,
             unique=True)
@@ -113,3 +115,7 @@ class Rating(models.Model):
 
     def __unicode__(self):
         return self.rating
+
+class DealImage(models.Model):
+  deal = models.ForeignKey(Deal, related_name="image")
+  image = models.ImageField(upload_to = 'upload_image/', null = True)

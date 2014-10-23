@@ -164,6 +164,7 @@ INSTALLED_APPS = [
     "deal",
     "UserProfile",
     "Pledge",
+    "Users",
 
 
 ]
