@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from django.core.urlresolvers import reverse
+
 
 
 from UserProfile.models import Profile
@@ -50,6 +52,8 @@ def pledge_edit(request, pk):
         else:
             pledge.delete()
             return redirect('profile_myslice')
+    elif 'submit-cancel' in request.POST:
+        return HttpResponseRedirect(reverse('deals_index'))
     else:
         form = CommitmentForm(instance=pledge)
 

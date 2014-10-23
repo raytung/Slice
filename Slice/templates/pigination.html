@@ -1,9 +1,9 @@
-<div class="pagination">
-  <span class="step-links">
-    <a href="?page=1">First</a>
+<ul class="pager">
+<span class="step-links">
+  <li><a href="?page=1">First</a></li>
 
     {% if deals.has_previous %}
-    <a href="?page={{ deals.previous_page_number }}">previous</a>
+    <li><a href="?page={{ deals.previous_page_number }}">&larr; Previous</a></li>
     {% endif %}
 
     <span class="current">
@@ -11,11 +11,11 @@
     </span>
 
     {% if deals.has_next %}
-    <a href="?page={{ deals.next_page_number }}">next</a>
+    <li><a href="?page={{ deals.next_page_number }}">Next &rarr;</a></li>
     {% endif %}
 
-    <a href="?page={{last_page}}">last</a>
+    <li><a href="?page={{last_page}}">last</a></li>
   </span>
-</div>
+</ul>
 
 

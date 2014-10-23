@@ -90,7 +90,7 @@ def create_deal_check_login(request):
     form = CreateDealForm()
     search_form = SearchDealForm()
 
-    if request.method == 'POST':
+    if 'submit-deal' in request.POST:
        form = CreateDealForm(request.POST, request.FILES)
 
        if form.is_valid():
@@ -103,6 +103,8 @@ def create_deal_check_login(request):
            success = True
        else:
             print form.errors
+    elif 'submit-cancel' in request.POST:
+        return HttpResponseRedirect(reverse('deals_index'))
     return render(request, 'create_deal.html', { 'form': form,
                                                  'request': request,
                                                  'search_form': search_form,

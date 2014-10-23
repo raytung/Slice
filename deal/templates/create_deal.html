@@ -32,9 +32,9 @@
 
 
         </div>
-              {% endfor %}  
-              <input type="submit" value="Create!" class="btn btn-default" name="submit-deal" />
-
+        {% endfor %}
+        <input type="submit" value="Create!" class="btn btn-success" name="submit-deal"  />
+        <input type="submit" value="Cancel" class="btn btn-default" name="submit-cancel" style="float: right;" />
               <a href="{% url 'deal_help' %}"> Help </a>
     </form>
 
