@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.http import Http404, HttpResponseForbidden
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.utils.http import base36_to_int, int_to_base36
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -22,6 +22,11 @@ from account.hooks import hookset
 from account.mixins import LoginRequiredMixin
 from account.models import SignupCode, EmailAddress, EmailConfirmation, Account, AccountDeletion
 from account.utils import default_redirect
+
+from UserProfile.models import Profile
+from Pledge.models import Commitment
+from deal.models import Deal
+from django.utils import timezone
 
 
 class SignupView(FormView):
@@ -739,6 +744,7 @@ class SettingsView(LoginRequiredMixin, FormView):
 
 class DeleteView(LogoutView):
 
+
     template_name = "account/delete.html"
     messages = {
         "account_deleted": {
@@ -764,3 +770,19 @@ class DeleteView(LogoutView):
         ctx.update(kwargs)
         ctx["ACCOUNT_DELETION_EXPUNGE_HOURS"] = settings.ACCOUNT_DELETION_EXPUNGE_HOURS
         return ctx
+
+    def get(self, request):
+        now = timezone.now()
+        profile = Profile.objects.get(account_id=request.user.id)
+        deals = Deal.objects.filter(owner_id=request.user.id)
+        pledge = Commitment.objects.filter(user_id=request.user.id)
+
+        error_message = None
+        if deals or pledge:
+            error_message = "You have created deals or commited to deals. You cannot delete your account until you removed them"
+
+        context_dict = {'error_message': error_message}
+
+        return render(request, 'account/delete.html', context_dict)
+
+
