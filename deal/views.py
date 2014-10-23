@@ -194,5 +194,6 @@ def detail(request, pk):
                     'avg_rating': avg_rating,
                     'is_expired': is_expired,
                     'units_left': units_left,
+                    'user': request.user,
                     'error_message': error_message}
     return render(request, 'deal_detail.html', context_dict)
