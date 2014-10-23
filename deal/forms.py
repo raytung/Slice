@@ -70,11 +70,15 @@ class CreateDealForm(BootstrapModelForm):
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
         now = timezone.now()
-        if start_date < now:
+        if start_date == None:
+            self._errors['start_date'] = self.error_class([ 'Please enter a date'])
+        if end_date == None:
+            self._errors['end_date'] = self.error_class([ 'Please enter a date'])
+        if start_date and start_date < now:
             self._errors['start_date'] = self.error_class([ 'Start date cannot be earlier than now'])
-        elif end_date < now:
+        elif end_date and end_date < now:
             self._errors['end_date'] = self.error_class([ 'End date cannot be earlier than now'])
-        elif end_date < start_date:
+        elif start_date and end_date and end_date < start_date:
             self._errors['end_date'] = self.error_class(['End date cannot be earlier than start date'])
             self._errors['start_date'] = self.error_class(['End date cannot be earlier than start date'])
         return cleaned_data
