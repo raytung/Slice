@@ -10,7 +10,8 @@
     <div class="media-body">
       <h4 class="media-heading">
         <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
-        <a href = "{% url 'deal_edit' deal.id%}">edit</a>  
+        <a href = "{% url 'deal_edit' deal.id%}"><i class="fa fa-edit"></i></a> 
+        <a href="{% url 'deal_view_pledges' deal.id %}"<i class="fa fa-group"></i></a>
       {% if deal.start_date <= now and deal.end_date > now %}
           <span class="badge alert-success">Active</span>
       {% elif deal.start_date <= now and deal.end_date <= now %}

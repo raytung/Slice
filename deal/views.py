@@ -266,13 +266,10 @@ def deal_view_pledges(request, pk):
         return render(request, 'deal_view_pledges.html', {'error_message':error_message})
 
     user_profiles = Profile.objects.select_related('account').filter(commitment__deal_id=pk)
-    for p in user_profiles:
-        print p.account.user.email
-        print p.commitment_set.get(deal=deal_entry)
-
-
+    
     context_dict = {'user_profiles': user_profiles,
-                    'pk': int(pk)}
+                    'pk': int(pk),
+                    'deal':deal_entry}
 
     return render(request, 'deal_view_pledges.html', context_dict)
 
