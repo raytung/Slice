@@ -38,7 +38,6 @@ class CreateDealForm(BootstrapModelForm):
                   'end_date',
                   'delivery_method',
                   'min_pledge_amount',
-                  'savings',
                   'thumbnail'
                   ]
 
@@ -118,7 +117,7 @@ class EditDealForm(BootstrapModelForm):
               'cost_per_unit',
               'num_units',
               'available_units',
-              'savings',
+              'savings_per_unit',
               'start_date',
               'end_date',
               'delivery_method',

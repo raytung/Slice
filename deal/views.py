@@ -225,7 +225,7 @@ def edit_deal (request, pk):
                                  'cost_per_unit':deal_entry.cost_per_unit,
                                  'num_units':deal_entry.num_units,
                                  'available_units':deal_entry.available_units,
-                                 'savings':deal_entry.savings,
+                                 'savings_per_unit':deal_entry.savings_per_unit,
                                  'start_date':deal_entry.start_date,
                                  'end_date':deal_entry.end_date,
                                  'delivery_method':deal_entry.delivery_method,
