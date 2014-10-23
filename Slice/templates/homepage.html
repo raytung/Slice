@@ -10,21 +10,23 @@
 
 {% block banner %}
 
-  <div class="jumbotron">
-      <div class="row">
+    <div class="row">
 
-        <div class="col-md-1 col-md-offset-2 col-xs-6 col-sm-6">
-          <img src="{% static "images/logo.svg" %}" alt="Logo" width=200px heigh=auto display=inline>
-          </div>
+      <div class="col-md-1 col-md-offset-2 col-xs-6 col-sm-6">
+        <img src="{% static "images/logo.svg" %}" alt="Logo" width=200px heigh=auto display=inline>
+        </div>
 
-        <div class="col-md-7 col-xs-12 col-sm-12">
-          <div class="container" style="margin-left:50px; margin-top:20px;">
-            <h1>Welcome to Slice of Pie.</h1>
-            <p> Get started <a href="{% url 'deals_index' %}"> here.</a></p>
-          </div>
-          </div>
-      </div>
-  </div>
+      <div class="col-md-7 col-xs-12 col-sm-12">
+        <div class="container" style="margin-left:50px; margin-top:20px;">
+          <h1>Welcome to Slice of Pie.</h1>
+          <p> Get started <a href="{% url 'deals_index' %}"> here.</a></p>
+        </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_content %}
 
   <div class="main">
   <div class = "content">
@@ -75,6 +77,5 @@
     </div>
   </div>
   </div>
-
 
 {% endblock %}
