@@ -32,6 +32,7 @@ class CreateDealForm(BootstrapModelForm):
                   'features_benefits',
                   'category',
                   'cost_per_unit',
+                  'non_monetary_condition',
                   'num_units',
                   'savings_per_unit',
                   'start_date',
@@ -68,9 +69,12 @@ class CreateDealForm(BootstrapModelForm):
 
     def clean(self):
         cleaned_data = super(CreateDealForm, self).clean()
-        start_date = cleaned_data.get("start_date")
-        end_date = cleaned_data.get("end_date")
         now = timezone.localtime(timezone.now())
+        start_date = cleaned_data.get("start_date", None)
+        end_date = cleaned_data.get("end_date", None)
+        cost = cleaned_data.get("cost_per_unit", None)
+        non_monetary_condition = cleaned_data.get("non_monetary_condition", None)
+        savings = cleaned_data.get("saving_per_unit", None)
         if start_date == None:
             self._errors['start_date'] = self.error_class([ 'Please enter a date'])
         if end_date == None:
@@ -82,6 +86,14 @@ class CreateDealForm(BootstrapModelForm):
         elif start_date and end_date and end_date < start_date:
             self._errors['end_date'] = self.error_class(['End date cannot be earlier than start date'])
             self._errors['start_date'] = self.error_class(['End date cannot be earlier than start date'])
+        if cost == None and (non_monetary_condition == None or not non_monetary_condition.strip()):
+            self._errors['cost_per_unit'] = self.error_class(['You must specify either cost per unit or non monetary condition'])
+            self._errors['non_monetary_condition'] = self.error_class(['You must specify either cost per unit or non monetary condition'])
+        if (non_monetary_condition == None or not non_monetary_condition.strip()) and savings:
+            self._errors['savings_per_unit'] = self.error_class(['You have entered non monetary condition. You cannot specify savings per unit'])
+            self._errors['non_monetary_condition'] = self.error_class(['You have entered non monetary condition. You cannot specify savings per unit'])
+
+
         return cleaned_data
 
 

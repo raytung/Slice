@@ -54,11 +54,12 @@ class Deal(models.Model):
    description = models.TextField(max_length=800)
    features_benefits = models.TextField(max_length=500, default= " ")
    #decimal field as opposed to floatfield http://stackoverflow.com/questions/2569015/django-floatfield-or-decimalfield-for-currency
-   cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
+   cost_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)], blank=True, null=True)
+   non_monetary_condition = models.TextField(max_length=800, null=True, blank=True)
    num_units = models.PositiveIntegerField()
    available_units = models.PositiveIntegerField()
    thumbnail = ResizedImageField(max_width=64, max_height=64, upload_to = 'upload_image/', null=True, blank=True)    
-   savings_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
+   savings_per_unit = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)], blank=True, null=True)
    start_date = models.DateTimeField(auto_now=False, help_text="dd/MM/YYYY hh:mm")
    end_date = models.DateTimeField(auto_now=False, help_text="dd/MM/YYYY hh:mm")
    '''
