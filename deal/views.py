@@ -22,6 +22,8 @@ from UserProfile.models import Profile, History
 from Pledge.forms import CommitmentForm
 from Pledge.models import Commitment
 
+from Slice.helper import get_sorted_model, get_paginator
+
 
 def getStringFromInput(form, s):
     """ Retrieves the string value from the input field in the given form  """
@@ -31,6 +33,7 @@ def getStringFromInput(form, s):
 def index(request):
     context = RequestContext(request)
     deals = Deal.objects.all()
+    print deals
 
 
     form = SearchDealForm(data=request.GET)
@@ -60,10 +63,16 @@ def index(request):
         if category:   q &= Q(category_id__exact=category.id)
 
         deals = Deal.objects.filter(q)
+    now = timezone.now()
+
+    deals = get_sorted_model(request, deals)
+    deals, last_page = get_paginator(deals, request)
 
 
     context_dict = {'deals': deals,
-                    'search_form': form }
+                    'search_form': form,
+                    'now': now,
+                    'last_page':last_page}
 
 
     return render_to_response('deal_index.html', context_dict, context)

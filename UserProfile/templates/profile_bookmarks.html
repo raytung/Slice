@@ -1,28 +1,8 @@
 {% extends "profile_base.html" %}
 
 {% block content %}
-<div class="btn-group">
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        Sort by <span class="caret"></span>
-  </button>
-<ul class="dropdown-menu" role="menu">
-  <li><a href="?sort=price_lth">Price (lowest to highest)</a></li>
-  <li><a href="?sort=price_htl">Price (highest to lowest)</a></li>
 
- <li class="divider"></li>
- <li><a href="?sort=alpha_lth">Title (a-z)</a></li>
-  <li><a href="?sort=alpha_htl">Title (z-a)</a></li>
-  <li class="divider"></li>
-
-  <li><a href="?sort=end_date_lth">End date (closest to furthest)</a></li>
-  <li><a href="?sort=end_date_htl">End date (furthest to closest)</a></li>
-  <li class="divider"></li>
-  <li><a href="?sort=start_date_lth">Start date (closest to furthest)</a></li>
-  <li><a href="?sort=start_date_htl">Start date (furthest to closest)</a></li>
-
-  </ul>
-</div>
-
+{% include 'sort_button.html'%}
 {% for deal in deals %}
 <div class="media">
   <a class="pull-left" href="#">
@@ -30,7 +10,14 @@
   </a>
   <div class="media-body">
     <h4 class="media-heading">
-      <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
+      <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a> 
+      {% if deal.start_date <= now and deal.end_date > now %}
+          <span class="badge alert-success">Active</span>
+      {% elif deal.start_date <= now and deal.end_date <= now %}
+          <span class="badge alert-danger">Ended</span>
+      {% elif deal.start_date > now %}
+          <span class="badge alert-info">Coming soon</span>
+      {% endif %}
     </h4>
     {{ deal.short_desc }} <br/>
     Ends on {{ deal.end_date }} <br/>

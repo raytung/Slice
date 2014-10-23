@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{% include 'sort_button.html'%}
   {% for deal in deals %}
 <div class="media">
   <a class="pull-left" href="#">
@@ -10,6 +11,14 @@
     <div class="media-body">
       <h4 class="media-heading">
         <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
+      {% if deal.start_date <= now and deal.end_date > now %}
+          <span class="badge alert-success">Active</span>
+      {% elif deal.start_date <= now and deal.end_date <= now %}
+          <span class="badge alert-danger">Ended</span>
+      {% elif deal.start_date > now %}
+          <span class="badge alert-info">Coming soon</span>
+      {% endif %}
+
       </h4>
       {{ deal.short_desc }} <br/>
       Ends on {{ deal.end_date }}
@@ -26,4 +35,5 @@
 {% endif %}
 <a href="{% url 'deal_create' %}"><button class="btn btn-default">Create Deal </button></a>
 
+{% include "pigination.html" %}
 {% endblock %}
