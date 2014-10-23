@@ -1,5 +1,7 @@
 {% extends "banner_base.html" %}
 
+{% load staticfiles%}
+
 {% load i18n %}
 
 {% block head_title %}{% trans "Welcome" %}{% endblock %}
@@ -7,15 +9,73 @@
 {% block body_class %}home{% endblock %}
 
 {% block banner %}
-    <h1>{% trans "Welcome to Pinax" %}</h1>
-    <p>
-    {% blocktrans %}
-    This is home page
-    {% endblocktrans %}
-    <a href="{% url 'deals_index' %}"> Deal </a>
-    </p>
 
-    {% if user.is_authenticated %}
-    <h2> This shows up if user is logged in </h2>
-        {% endif %}
+    <div class="row">
+
+      <div class="col-md-1 col-md-offset-2 col-xs-6 col-sm-6">
+        <img src="{% static "images/logo.svg" %}" alt="Logo" width=200px heigh=auto display=inline>
+        </div>
+
+      <div class="col-md-7 col-xs-12 col-sm-12">
+        <div class="container" style="margin-left:50px; margin-top:20px;">
+          <h1>Welcome to Slice of Pie.</h1>
+          <p> Get started <a href="{% url 'deals_index' %}"> here.</a></p>
+        </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_content %}
+
+  <div class="main">
+  <div class = "content">
+    <div class="container">
+    <h1 style="padding-left:20px">How it Works</h1>
+    </div>
+  </div>
+    <div class="container" style="padding-top:10px;">
+    <div class="row">
+        <div class="col-md-4 col-xs-6 col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h3>Propose a Deal</h3>
+              <p>You want to buy an item, and see a good deal for a large quantity. Create a deal to get others to purchase a share.
+              </p>
+              <div class ="imgwrapper" padding-left=200px>
+                <img src="{% static "images/deal.png" %}" alt="Deal" width=200px heigh=auto>
+              </div>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-4 col-xs-6 col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h3>Get it Crowdfunded</h3>
+              <p>Search for deals you would like to support.</p>
+              <br>
+              <br>
+              <div class ="imgwrapper">
+                <img src="{% static "images/money.png" %}" alt="Money" width=200px heigh=auto>
+              </div>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-4 col-xs-6 col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h3>Everyone Benefits</h3>
+              <p>Collect your slice of the pie.</p>
+              <br>
+              <br>
+              <div class ="imgwrapper">
+                <img src="{% static "images/win.png" %}" alt="Happy" width=200px padding-left=200px heigh=auto>
+              </div>
+            </div>
+        </div>
+        </div>
+    </div>
+  </div>
+  </div>
+
 {% endblock %}
