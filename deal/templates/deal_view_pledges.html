@@ -7,20 +7,22 @@
 </div>
 {% else %}
 
-{% for u in found_users %}
-{% for p in user_profiles %}
-{% for i in p.commitment_set.all %}
+   {% for p in user_profiles %}
 <div class="well">
-  {{u.email}}
-  {{i.requests}}
+  <label>Username: </label> {{p.account.user.username}} <br/>
+  <label>Email: </label> {{p.account.user.email}} <br/>
+  {% for i in p.commitment_set.all%}
+  {% if i.deal_id == pk %}
+  <label>Units: </label>{{i.units}}<br/>
+  <label>Requests: </label>{{i.requests}} <br/>
+  {% endif %}
+  {% endfor %}
 </div>
- {% endfor %}
- {% endfor %}
- {% endfor %}
+   {% endfor %}
 
 
 
-  {% if not pledges %}
+  {% if not user_profiles %}
    <div class="alert alert-warning" role="alert">
       Nobody has commited yet! Please check again later!
    </div>
