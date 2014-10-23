@@ -93,26 +93,20 @@ def create_deal_check_login(request):
                                                  'search_form': search_form,
                                                  'valid_form': success},)
 
-def is_valid_pledge(pledge_form, deal):
-    time_commited = timezone.now()
-    units = pledge_form.cleaned_data['units']
-    return (deal.end_date >= time_commited and \
-        deal.available_units >= units and \
-        deal.min_pledge_amount <= units)
-
-
 def detail(request, pk):
     try:
         found_deal = Deal.objects.get(id=pk)
     except:
         found_deal = None
-    if not found_deal: return render(request, 'deal_detail.html', {'deal':found_deal})
+    if not found_deal: return render(request, 'deal_detail.html', {'deal':found_deal, 
+                                                                   'error_message': "No deal is found. Did you enter the correct URL?"})
 
     signed_in = request.user.is_authenticated()
     current_viewer = None if not signed_in else Profile.objects.get(account_id=request.user.id)
     deal_owner = User.objects.get(id=found_deal.owner_id)
     pledge_form = CommitmentForm()
     rate_form = RateDealForm()
+    error_message = None
 
 
     # don't want double history on bookmarking/pledging
@@ -125,19 +119,34 @@ def detail(request, pk):
     except ObjectDoesNotExist:
         has_pledged = False
 
+    claimed_units = Commitment.objects.filter(deal_id=found_deal.id).aggregate(Sum('units'))
+    #in case no claimed units yet
+    if claimed_units['units__sum'] == None:
+        units_left = found_deal.num_units
+    else:
+        units_left = found_deal.num_units - claimed_units['units__sum']
+
     if 'submit-pledge' in request.POST:
         pledge_form = CommitmentForm(request.POST)
-        if pledge_form.is_valid() and is_valid_pledge(pledge_form, found_deal) :
-            print "hello"
-            pledge = pledge_form.save(commit=False)
-            pledge.last_modified_date= timezone.now()
-            pledge.user = current_viewer
-            pledge.deal = found_deal
-            pledge.save()
+        if pledge_form.is_valid():
+            request_units = pledge_form.cleaned_data['units']
+            now = timezone.now()
+            if request_units > units_left:
+                error_message = "There are not enough units to go around. Please reduce your units"
+            elif now > found_deal.end_date:
+                error_message = "You cannot pledge anymore. The deal has expired!"
+            elif found_deal.start_date > now:
+                error_message = "You cannot pledge yet. Please wait till the deal starts!"
+            elif found_deal.min_pledge_amount > request_units:
+                error_message = "You need to pledge at least " + str(deal.min_pledge_amount) + " unit!"
+            else:
+                pledge = pledge_form.save(commit=False)
+                pledge.last_modified_date= timezone.now()
+                pledge.user = current_viewer
+                pledge.deal = found_deal
+                pledge.save()
 
-            found_deal.available_units -= pledge.units
-            found_deal.save()
-            has_pledged = True
+                has_pledged = True
     elif 'bookmark' in request.POST:
         current_viewer.bookmarks.add(found_deal)
     elif 'remove-bookmark' in request.POST:
@@ -170,14 +179,10 @@ def detail(request, pk):
     else:
         avg_rating = "This deal has no ratings yet. Be the first one to rate it!"
 
-    is_expired = False if found_deal.end_date >= timezone.now() else True
+    is_expired = (found_deal.end_date < timezone.now())
 
-    claimed_units = Commitment.objects.filter(deal_id=found_deal.id).aggregate(Sum('units'))
-    #in case no claimed units yet
-    if claimed_units['units__sum'] == None:
-        units_left = found_deal.num_units
-    else:
-        units_left = found_deal.num_units - claimed_units['units__sum']
+    if is_expired: error_message = "Deal has expired"
+
 
     context_dict = {'deal': found_deal,
                     'owner': deal_owner,
@@ -188,5 +193,6 @@ def detail(request, pk):
                     'rate_form': rate_form,
                     'avg_rating': avg_rating,
                     'is_expired': is_expired,
-                    'units_left': units_left}
+                    'units_left': units_left,
+                    'error_message': error_message}
     return render(request, 'deal_detail.html', context_dict)

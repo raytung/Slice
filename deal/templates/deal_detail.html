@@ -59,18 +59,32 @@
     </div>
   </div> <!-- end row -->
 
-{% if not is_expired %}
+  {% if error_message%}
+   <div class="alert alert-danger" role="alert">
+       {{error_message}}
+    </div>
+    {% endif %}
+
+    {% if units_left <= 0 %}
+    <div class="alert alert-info" role="alert"> 
+        This deal has no units left! :( <br/>
+        Thank you for your interest!
+    </div>
+    {% endif %}
+
+    {% if has_pledged %}
+      <div class="alert alert-success" role="alert" style="margin-top: 1em;">
+            You have already pledged!
+      </div>
+    {% endif %}
+
+    {% if not signed_in %}
+      Please signin to make a commitment!
+    {% endif %}
+
+    {% if signed_in and units_left > 0 and not has_pledged and not is_expired %}
   <div class="row">
-
- <h1> Make a Pledge </h1>
-    {% if signed_in%}
-        {% if has_pledged %}
-          <div class="alert alert-success" role="alert" style="margin-top: 1em;">
-            You cannot pledged towards this deal again or pledge to your own deal!
-          </div>
-          {% endif %} {# end has_pledge #}
-
-          {% if units_left > 0 %}
+    <h1> Make a Pledge </h1>
           <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
             {% csrf_token %}
 
@@ -96,32 +110,15 @@
             <input type="submit" value="Cut me a Slice!" class="btn btn-default" name="submit-pledge" />
 
           </form>
-          {% else %} {# if units_left else #}
-            <div class="alert alert-info" role="alert"> 
-              This deal has no units left! :( <br/>
-              Thank you for your interest!
-            </div>
-          {% endif %} {# end if units_left #}
-    {% else %} {# if signed_in else #}
-      Please sign in to pledge
-
-    {% endif %}
 
 
 
   </div> <!-- end row -->
-  {% else%} {# if not is expired else #}
-    <div class="alert alert-danger" role="alert"> 
-      Deal has expired!
-    </div>
 
-  {% endif %}
-  {% else %} {# if deal else #}
-   <div class="alert alert-danger" role="alert"> 
-      No deal is found. Did you enter the correct URL?
-   </div>
+    {% endif %}
 
-  {% endif %} {# end if deal#}
+  {% endif %} {# end if deal  #}
+
 </div> <!-- end container -->
 {% endblock %}
 
