@@ -12,10 +12,10 @@
   <label>Username: </label> {{p.account.user.username}} <br/>
   <label>Email: </label> {{p.account.user.email}} <br/>
   {% for i in p.commitment_set.all%}
-  {% if i.deal_id == pk %}
-  <label>Units: </label>{{i.units}}<br/>
-  <label>Requests: </label>{{i.requests}} <br/>
-  {% endif %}
+    {% if i.deal.id == pk %}
+        <label>Units: </label>{{i.units}}<br/>
+        <label>Requests: </label>{{i.requests}} <br/>
+    {% endif %}
   {% endfor %}
 </div>
    {% endfor %}

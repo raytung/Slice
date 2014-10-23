@@ -272,7 +272,7 @@ def deal_view_pledges(request, pk):
 
 
     context_dict = {'user_profiles': user_profiles,
-                    'pk': pk}
+                    'pk': int(pk)}
 
     return render(request, 'deal_view_pledges.html', context_dict)
 
