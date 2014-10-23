@@ -1,6 +1,14 @@
 {% extends "site_base.html" %}
 
 {% block body %}
+ {% if error_message %}
+<div class="alert alert-danger" role="alert">
+   <strong> Error: </strong>
+   {{error_message}}
+ </div>
+
+ {% endif %}
+
 
 {% if pledge and not is_expired %}
    {% if saved %}
@@ -24,14 +32,6 @@
 
 
 </div>
- {% if error_message %}
-<div class="alert alert-danger" role="alert">
-   <strong> Error: </strong>
-   {{error_message}}
- </div>
-
- {% endif %}
-
 
    <form role="form" method="post" action="{% url 'pledge_edit' deal.id %}">
     {% csrf_token %}
@@ -42,7 +42,8 @@
     </div>
 
     {% endfor %}
-    <input type="submit" value="Save" class="btn btn-default" name="submit-deal" />
+    <input type="submit" value="Save" class="btn btn-default" name="save-pledge" />
+    <input type="submit" value="Delete Commitment" class="btn btn-danger" name="delete-pledge" />
   </form>
  {% endif %}
 
