@@ -22,7 +22,7 @@
       {% endif %}
       <br/>
       <strong>Rating: </strong> {{avg_rating}} <br/>
-      {% if not is_expired%}
+      {% if not is_expired and user.is_authenticated and deal.owner.account_id != user.id %}
       <form role="form" method="post" action="{% url 'deal_detail' deal.id %}">
         {% csrf_token %}
         <div class="form-group">

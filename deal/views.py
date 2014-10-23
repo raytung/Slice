@@ -188,5 +188,6 @@ def detail(request, pk):
                     'rate_form': rate_form,
                     'avg_rating': avg_rating,
                     'is_expired': is_expired,
-                    'units_left': units_left}
+                    'units_left': units_left,
+                    'user': request.user}
     return render(request, 'deal_detail.html', context_dict)
