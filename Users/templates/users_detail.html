@@ -3,14 +3,21 @@
 
 {% block content %}
 
+{% if error_message %}
+<div class="alert alert-danger" role="alert">
+  {{error_message}}
+</div>
+{% endif %}
+
+{% if profile != None %}
 <div class="panel panel-default" id="account-details">
   <div class="panel-heading">
-    {{user.username}}
+    {{account.user.username}}
   </div>
   <div class="panel-body" id="account-body">
-    <p>First name: {{ user.first_name }}</p>
-    <p>Last name:  {{ user.last_name }}</p>
-    <p>Email:      {{ user.email }}</p>
+    <p>First name: {{ account.user.first_name }}</p>
+    <p>Last name:  {{ account.user.last_name }}</p>
+    <p>Email:      {{ account.user.email }}</p>
     <p>Current Rating: {{ profile.rating }}</p>
 
   </div>
@@ -41,5 +48,6 @@
   </div>
 
 </div> <!-- end panel -->
+{% endif%}
 
 {% endblock %}
