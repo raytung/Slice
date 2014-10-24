@@ -56,7 +56,6 @@ class Profile(models.Model):
 
     #User not modifiable
     consecutive_incorrect_login_counts = models.PositiveIntegerField(default=0)
-    rating = models.IntegerField(default=0)
     viewing_history = models.ManyToManyField(Deal, through='History')
     bookmarks = models.ManyToManyField(Deal, related_name="bookmarks")
 
