@@ -34,12 +34,12 @@ def index(request):
     context = RequestContext(request)
     now = timezone.localtime(timezone.now())
     deals = Deal.objects.filter(end_date__gte=now)
-    print deals
 
     form = SearchDealForm(data=request.GET)
+    queries_without_page = request.GET.copy()
+    if queries_without_page.get('page', None):
+        del queries_without_page['page']
 
-    #if nothing is entered/ selected, display top 5 deals
-    #else, search.
 
     if  'search-deals' in request.GET and form.is_valid():
         search_key = getStringFromInput(form, 'search')
@@ -71,7 +71,8 @@ def index(request):
     context_dict = {'deals': deals,
                     'search_form': form,
                     'now': now,
-                    'last_page':last_page}
+                    'last_page':last_page,
+                    'query': queries_without_page}
 
 
     return render_to_response('deal_index.html', context_dict, context)

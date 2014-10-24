@@ -51,3 +51,7 @@ h3{
 .panel {
   min-height: 400px;
 }
+
+footer{
+  min-height: 5em;
+}
