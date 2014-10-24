@@ -156,7 +156,7 @@ def detail(request, pk):
             elif found_deal.start_date > now:
                 error_message = "You cannot pledge yet. Please wait till the deal starts!"
             elif found_deal.min_pledge_amount > request_units:
-                error_message = "You need to pledge at least " + str(deal.min_pledge_amount) + " unit!"
+                error_message = "You need to pledge at least " + str(found_deal.min_pledge_amount) + " unit!"
             else:
                 pledge = pledge_form.save(commit=False)
                 pledge.last_modified_date= timezone.localtime(timezone.now())
