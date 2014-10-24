@@ -174,7 +174,6 @@ def myslice(request):
     deals = get_sorted_model(request, deals)
 
     paginated_obj, last_page = get_paginator(deals, request)
-    print deals[0]
 
     context_dict = {'deals': paginated_obj,
                     'last_page': last_page,
