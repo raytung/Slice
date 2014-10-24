@@ -76,6 +76,8 @@ class CreateDealForm(BootstrapModelForm):
         cost = cleaned_data.get("cost_per_unit", None)
         non_monetary_condition = cleaned_data.get("non_monetary_condition", None)
         savings = cleaned_data.get("saving_per_unit", None)
+        min_pledge_units = cleaned_data.get("min_pledge_amount", None)
+        num_units = cleaned_data.get("num_units", None)
         if start_date == None:
             self._errors['start_date'] = self.error_class([ 'Please enter a date'])
         if end_date == None:
@@ -93,6 +95,8 @@ class CreateDealForm(BootstrapModelForm):
         if (non_monetary_condition == None or not non_monetary_condition.strip()) and savings:
             self._errors['savings_per_unit'] = self.error_class(['You have entered non monetary condition. You cannot specify savings per unit'])
             self._errors['non_monetary_condition'] = self.error_class(['You have entered non monetary condition. You cannot specify savings per unit'])
+        if min_pledge_units > num_units:
+            self._errors['min_pledge_amount'] = self.error_class(['Your minimum pledge amount cannot be higher than your available units'])
 
 
         return cleaned_data
