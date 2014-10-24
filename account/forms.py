@@ -77,6 +77,7 @@ class SignupForm(forms.Form):
 
 class LoginForm(forms.Form):
 
+
     password = forms.CharField(
         label=_("Password"),
         widget=forms.PasswordInput(render_value=False)
@@ -104,6 +105,7 @@ class LoginForm(forms.Form):
         return hookset.get_user_credentials(self, self.identifier_field)
 
 
+
 class LoginUsernameForm(LoginForm):
 
     username = forms.CharField(label=_("Username"), max_length=30)
@@ -112,6 +114,20 @@ class LoginUsernameForm(LoginForm):
 
     def __init__(self, *args, **kwargs):
         super(LoginUsernameForm, self).__init__(*args, **kwargs)
+        field_order = ["username", "password", "remember"]
+        if not OrderedDict or hasattr(self.fields, "keyOrder"):
+            self.fields.keyOrder = field_order
+        else:
+            self.fields = OrderedDict((k, self.fields[k]) for k in field_order)
+
+class LoginUsernameEmailForm(LoginForm):
+
+    username = forms.CharField(label=_("Username/Email"), max_length=30)
+    authentication_fail_message = _("The username/email and/or password you specified are not correct.")
+    identifier_field = "username"
+
+    def __init__(self, *args, **kwargs):
+        super(LoginUsernameEmailForm, self).__init__(*args, **kwargs)
         field_order = ["username", "password", "remember"]
         if not OrderedDict or hasattr(self.fields, "keyOrder"):
             self.fields.keyOrder = field_order

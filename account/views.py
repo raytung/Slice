@@ -15,7 +15,7 @@ from django.contrib.auth.tokens import default_token_generator
 from account import signals
 from account.compat import get_user_model
 from account.conf import settings
-from account.forms import SignupForm, LoginUsernameForm
+from account.forms import SignupForm, LoginUsernameForm, LoginUsernameEmailForm
 from account.forms import ChangePasswordForm, PasswordResetForm, PasswordResetTokenForm
 from account.forms import SettingsForm
 from account.hooks import hookset
@@ -278,7 +278,7 @@ class LoginView(FormView):
 
     template_name = "account/login.html"
     template_name_ajax = "account/ajax/login.html"
-    form_class = LoginUsernameForm
+    form_class = LoginUsernameEmailForm
     form_kwargs = {}
     redirect_field_name = "next"
 

@@ -2,6 +2,9 @@
 
 {% block content %}
 
+
+<a href="{% url 'deal_create' %}"><button class="btn btn-success">Create Deal </button></a>
+
 {% include 'sort_button.html'%}
   {% for deal in deals %}
 <div class="media">
@@ -9,8 +12,10 @@
     <img class="media-object" src="/site_media/media/{{deal.thumbnail}}" >
     </a>
     <div class="media-body">
-      <h4 class="media-heading">
+      <h4 class="media-heading" style="display:inline;">
         <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
+      </h4>
+        <span style="float:right;">Ends on {{ deal.end_date }}</span>
       {% if deal.start_date <= now and deal.end_date > now %}
           <span class="badge alert-success">Active</span>
       {% elif deal.start_date <= now and deal.end_date <= now %}
@@ -19,21 +24,18 @@
           <span class="badge alert-info">Coming soon</span>
       {% endif %}
 
-      </h4>
+    </br>
       {{ deal.short_desc }} <br/>
-      Ends on {{ deal.end_date }}
     </div>
 
 </div>
 
 {% endfor %}
-
 {% if not deals%}
   <div class="alert alert-danger" role="alert">
     No deals found!
   </div>
 {% endif %}
-<a href="{% url 'deal_create' %}"><button class="btn btn-default">Create Deal </button></a>
 
 {% include "pigination.html" %}
 {% endblock %}

@@ -132,6 +132,11 @@ def my_deals(request):
         #redirect to login page
         return HttpResponseRedirect('/account/login?next=' + request.path )
 
+    queries_without_page = request.GET.copy()
+    if queries_without_page.get('page', None):
+        del queries_without_page['page']
+
+
     deals = Deal.objects.filter(owner_id=request.user.id)
     deals = get_sorted_model(request, deals)
     paginated_obj, last_page = get_paginator(deals, request)
@@ -139,7 +144,8 @@ def my_deals(request):
 
     context_dict = {'deals': paginated_obj,
                     'last_page': last_page,
-                    'now':now}
+                    'now':now,
+                    'query': queries_without_page}
 
     return render(request, 'profile_mydeals.html', context_dict)
 
@@ -160,13 +166,18 @@ def myslice(request):
     if not request.user.is_authenticated():
         #redirect to login page
         return HttpResponseRedirect('/account/login?next=' + request.path )
-    deals = Deal.objects.filter(commitment__user_id=request.user.id)
+
+    queries_without_page = request.GET.copy()
+    if queries_without_page.get('page', None):
+        del queries_without_page['page']
+    deals = Deal.objects.select_related('commitment').filter(commitment__user_id=request.user.id)
     deals = get_sorted_model(request, deals)
 
     paginated_obj, last_page = get_paginator(deals, request)
 
     context_dict = {'deals': paginated_obj,
-                    'last_page': last_page}
+                    'last_page': last_page,
+                    'query': queries_without_page}
 
 
     return render(request, 'profile_myslice.html', context_dict)
@@ -176,6 +187,11 @@ def bookmarks(request, **kwargs):
         #redirect to login page
         return HttpResponseRedirect('/account/login?next=' + request.path )
 
+    queries_without_page = request.GET.copy()
+    if queries_without_page.get('page', None):
+        del queries_without_page['page']
+
+
     current_viewer = Profile.objects.get(account_id=request.user.id)
     bookmark = current_viewer.bookmarks.all()
     bookmark = get_sorted_model(request, bookmark)
@@ -184,7 +200,8 @@ def bookmarks(request, **kwargs):
 
     context_dict = {'deals': paginated_obj,
                     'last_page': last_page,
-                    'now': now}
+                    'now': now,
+                    'query':queries_without_page}
 
     return render(request, 'profile_bookmarks.html', context_dict)
 

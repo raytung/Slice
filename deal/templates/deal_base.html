@@ -4,6 +4,7 @@
 
 {% block body %}
 <div class="container">
+  {% load widget_tweaks %}
 
   <div class="row">
     <!-- search form -->
@@ -36,12 +37,12 @@
 
       <div class="form-group">
         <label>{{ search_form.start_date.label }}</label>
-        {{ search_form.start_date }}
+        {{ search_form.start_date | attr:"id:search_start_date" |attr:"placeholder:dd/mm/yyyy" }}
       </div>
 
       <div class="form-group">
         <label>{{ search_form.end_date.label }}</label>
-        {{ search_form.end_date }}
+        {{ search_form.end_date | attr:"id:search_end_date" |attr:"placeholder:dd/mm/yyyy"  }}
       </div>
 
       <div class="form-group">
