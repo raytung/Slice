@@ -5,6 +5,8 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 from account.conf import settings
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class AccountDefaultHookSet(object):
@@ -45,8 +47,13 @@ class AccountDefaultHookSet(object):
         return self.generate_random_token([email])
 
     def get_user_credentials(self, form, identifier_field):
+        try:
+            username = User.objects.get(email=form.cleaned_data[identifier_field])
+            username = username.username
+        except ObjectDoesNotExist:
+            username = form.cleaned_data[identifier_field]
         return {
-            "username": form.cleaned_data[identifier_field],
+            "username": username,
             "password": form.cleaned_data["password"],
         }
 
