@@ -1,6 +1,11 @@
 Bulk Buy
 =====================
 
+Note: If you have django-user-account and pinax-theme-bootstrap, remove them using   
+
+    sudo pip uninstall django-user-account && sudo pip uninstall pinax-theme-bootstrap
+    
+I have added them directly into our app for easier customization
 
 Getting Started:
 

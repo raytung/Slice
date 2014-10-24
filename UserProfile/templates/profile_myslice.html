@@ -2,8 +2,9 @@
 
 {% block content %}
 
+{% include 'sort_button.html'%}
+
 {% for deal in deals %}
-  {% for i in deal.commitment_set.all %}
 <div class="media">
   <a class="pull-left" href="#">
     <img class="media-object" src="/static/images/default.svg" >
@@ -12,13 +13,26 @@
       <h4 class="media-heading">
         <a href="{% url 'deal_detail' deal.id %}">{{ deal.title }}</a>
         <a href="{% url 'pledge_edit' deal.id %}"><i class="fa fa-edit"></i></a>
+     {% if deal.start_date <= now and deal.end_date > now %}
+          <span class="badge alert-success">Active</span>
+      {% elif deal.start_date <= now and deal.end_date <= now %}
+          <span class="badge alert-danger">Ended</span>
+      {% elif deal.start_date > now %}
+          <span class="badge alert-info">Coming soon</span>
+      {% endif %}
+
       </h4>
-      <strong>Pledged units: </strong>{{ i.units }} <br/>
-      <strong>Your request: </strong>{{i.requests}}
+ 
+      {% for i in deal.commitment_set.all %}
+      {% if i.deal.pk == deal.pk%}
+     <strong>Pledged units: </strong>{{ i.units }} <br/>
+     <strong>Your request: </strong>{{i.requests}}
+     {% endif %}
+      {% endfor %}
     </div>
 
   </div>
-  {% endfor %}
+ 
   {% endfor %}
 
 

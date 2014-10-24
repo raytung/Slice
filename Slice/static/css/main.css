@@ -1,0 +1,57 @@
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-family: 'Lato', sans-serif;
+}
+
+h3{
+  text-align: center;
+  margin-top: 0px;
+}
+
+
+
+.jumbotron {
+  min-height: 350px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: 0px;
+  color: #191919;
+  background-color: #FFE4C4;
+}
+
+.navbar {
+	margin-bottom: 0px;
+}
+
+
+.footer {
+	color: #191919;
+	background-color: #FFE4C4;
+	height: 100px;
+	padding-top: 10px;
+	text-align: right;
+}
+
+.imgwrapper{
+  padding-top: 30px;
+  padding-left: 65px;
+}
+
+.panel {
+  min-height: 400px;
+}
+
+footer{
+  min-height: 5em;
+}

@@ -37,9 +37,17 @@
       <p> {{deal.description}}  </p>
       <h4> Features and Benefits </h4>
       <p> {{deal.features_benefits}}  </p>
+      <p><strong>Start Date:</strong> {{deal.start_date}} </p>
       <p><strong>Due Date:</strong> {{deal.end_date}} </p>
+      {% if deal.cost_per_unit%}
       <p><strong>Price:</strong> ${{deal.cost_per_unit}} </p>
+      {% endif %}
+      {% if deal.non_monetary_condition %}
+      <p><strong>Non monetary condition: </strong> {{deal.non_monetary_condition}}</p>
+      {% endif %}
+      {% if deal.savings_per_unit %}
       <p><strong>Savings involved per unit:</strong> ${{deal.savings_per_unit}} </p>
+      {% endif %}
       <p><strong>Units left:</strong> {{units_left}}
       <p><strong>Delivery method:</strong> {{deal.delivery_method}}</p>
       <p><strong>Minimum Total Pledges Required:</strong> {{deal.min_pledge_amount}}</p>

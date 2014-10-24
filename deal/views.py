@@ -22,6 +22,8 @@ from UserProfile.models import Profile, History
 from Pledge.forms import CommitmentForm
 from Pledge.models import Commitment
 
+from Slice.helper import get_sorted_model, get_paginator
+
 
 def getStringFromInput(form, s):
     """ Retrieves the string value from the input field in the given form  """
@@ -30,15 +32,16 @@ def getStringFromInput(form, s):
 
 def index(request):
     context = RequestContext(request)
-    deals = Deal.objects.all()
-
+    now = timezone.localtime(timezone.now())
+    deals = Deal.objects.filter(end_date__gte=now)
 
     form = SearchDealForm(data=request.GET)
+    queries_without_page = request.GET.copy()
+    if queries_without_page.get('page', None):
+        del queries_without_page['page']
 
-    #if nothing is entered/ selected, display top 5 deals
-    #else, search.
 
-    if request.method == 'GET' and form.is_valid():
+    if  'search-deals' in request.GET and form.is_valid():
         search_key = getStringFromInput(form, 'search')
         min_price  = form.cleaned_data['min_price']
         max_price  = form.cleaned_data['max_price']
@@ -61,15 +64,22 @@ def index(request):
 
         deals = Deal.objects.filter(q)
 
+    deals = get_sorted_model(request, deals)
+    deals, last_page = get_paginator(deals, request)
+
 
     context_dict = {'deals': deals,
-                    'search_form': form }
+                    'search_form': form,
+                    'now': now,
+                    'last_page':last_page,
+                    'query': queries_without_page}
 
 
     return render_to_response('deal_index.html', context_dict, context)
 
 def is_valid_dates(start, end):
-    return start >= timezone.now() and end > timezone.now() and start < end
+    now = timezone.localtime(timezone.now())
+    return start >= now and end > now and start < end
 
 
 def create_deal_check_login(request):
@@ -81,7 +91,7 @@ def create_deal_check_login(request):
     form = CreateDealForm()
     search_form = SearchDealForm()
 
-    if request.method == 'POST':
+    if 'submit-deal' in request.POST:
        form = CreateDealForm(request.POST, request.FILES)
 
        if form.is_valid():
@@ -94,6 +104,8 @@ def create_deal_check_login(request):
            success = True
        else:
             print form.errors
+    elif 'submit-cancel' in request.POST:
+        return HttpResponseRedirect(reverse('deals_index'))
     return render(request, 'create_deal.html', { 'form': form,
                                                  'request': request,
                                                  'search_form': search_form,
@@ -136,7 +148,7 @@ def detail(request, pk):
         pledge_form = CommitmentForm(request.POST)
         if pledge_form.is_valid():
             request_units = pledge_form.cleaned_data['units']
-            now = timezone.now()
+            now = timezone.localtime(timezone.now())
             if request_units > units_left:
                 error_message = "There are not enough units to go around. Please reduce your units"
             elif now > found_deal.end_date:
@@ -144,10 +156,10 @@ def detail(request, pk):
             elif found_deal.start_date > now:
                 error_message = "You cannot pledge yet. Please wait till the deal starts!"
             elif found_deal.min_pledge_amount > request_units:
-                error_message = "You need to pledge at least " + str(deal.min_pledge_amount) + " unit!"
+                error_message = "You need to pledge at least " + str(found_deal.min_pledge_amount) + " unit!"
             else:
                 pledge = pledge_form.save(commit=False)
-                pledge.last_modified_date= timezone.now()
+                pledge.last_modified_date= timezone.localtime(timezone.now())
                 pledge.user = current_viewer
                 pledge.deal = found_deal
                 pledge.save()
@@ -185,7 +197,7 @@ def detail(request, pk):
     else:
         avg_rating = "This deal has no ratings yet. Be the first one to rate it!"
 
-    is_expired = (found_deal.end_date < timezone.now())
+    is_expired = (found_deal.end_date < timezone.localtime(timezone.now()))
 
     if is_expired: error_message = "Deal has expired"
 
@@ -209,19 +221,35 @@ def edit_deal (request, pk):
     if not request.user.is_authenticated():
         #redirect to login page
         return HttpResponseRedirect('/account/login?next=' + request.path)
+    
+    try:
+        deal_entry = Deal.objects.get(id=pk)
+    except ObjectDoesNotExist:
+        deal_entry = None
+    if not deal_entry:
+        error_message = "You do not have right to modify this deal"
+        return render(request, 'edit_deal.html', {'error_message':error_message})
+
 
 
     deal_entry = Deal.objects.get(id=pk)
-    deal_img = DealImage.objects.filter(deal_id=deal_entry.pk)
+    try:
+        deal_img = DealImage.objects.filter(deal_id=pk)[:1]
+    except ObjectDoesnotExist:
+        deal_img = None
 
     if request.user.id != deal_entry.owner_id:
         error_message = "You do not have right to modify this deal"
         return render(request, 'edit_deal.html', {'error_message':error_message})
-   
+
+    units_remained = deal_entry.num_units
+    claimed_units = Commitment.objects.filter(deal_id=deal_entry.id).aggregate(Sum('units'))
+    if claimed_units.get('units__sum', None):
+        units_remained -= claimed_units['units__sum']
+
     if request.method == 'POST':
         form = EditDealForm(request.POST, request.FILES, instance=deal_entry)
         image_form = UploadImageForm(request.POST, request.FILES)
-
 
         if form.is_valid() and image_form.is_valid():
             img_deal = image_form.save(commit=False)
@@ -230,14 +258,10 @@ def edit_deal (request, pk):
 
             img = request.FILES.get('image', None)
             img_deal.image=img
-               
-            print img    
             form.save()
-            print image_form
             img_deal.save()
 
             return redirect('profile_mydeals')
-       
     else:
         form = EditDealForm(initial={'title':deal_entry.title,
                                  'short_desc':deal_entry.short_desc,
@@ -252,14 +276,40 @@ def edit_deal (request, pk):
                                  'delivery_method':deal_entry.delivery_method,
                                  'thumbnail': deal_entry.thumbnail
                                  })
-        
-       
-        image_form = UploadImageForm(initial={'image':  deal_img})
-       
+        if deal_img:
+            deal_img = DealImage.objects.filter(deal_id=pk)[:1].get()
+            image_form = UploadImageForm(initial={'image': deal_img.image})
+        else:
+            image_form = UploadImageForm()
 
     return render(request, 'edit_deal.html', {'edit_form': form,
                                               'image_edit' : image_form,
                                               'deal': deal_entry
                                               })
 
+def deal_view_pledges(request, pk):
+    if not request.user.is_authenticated():
+        #redirect to login page
+        return HttpResponseRedirect('/account/login?next=' + request.path)
+    try:
+        deal_entry = Deal.objects.get(id=pk)
+    except ObjectDoesNotExist:
+        deal_entry = None
+
+    if not deal_entry:
+        error_message = "You do not have access rights this page"
+        return render(request, 'deal_view_pledges.html', {'error_message':error_message})
+
+
+    if request.user.id != deal_entry.owner_id:
+        error_message = "You do not have access rights this page"
+        return render(request, 'deal_view_pledges.html', {'error_message':error_message})
+
+    user_profiles = Profile.objects.select_related('account').filter(commitment__deal_id=pk)
+    
+    context_dict = {'user_profiles': user_profiles,
+                    'pk': int(pk),
+                    'deal':deal_entry}
+
+    return render(request, 'deal_view_pledges.html', context_dict)
 

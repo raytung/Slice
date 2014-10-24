@@ -3,7 +3,7 @@
     i.e navbar, footer, body
     elements that stay the same no matter which page we go to.
 
-    in the beginning of your custom templates, extend this file. 
+    in the beginning of your custom templates, extend this file.
     (Ignore the {# #} )
     {#         {% extends "site_base.html %}                      #}
 
@@ -24,6 +24,9 @@
             <link href="{% static "pinax/css/theme.css" %}" rel="stylesheet">
             <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
             <link href="{% static "font-awesome/css/font-awesome.css" %}" rel="stylesheet">
+            <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+            <link href="{% static "css/main.css" %}" rel="stylesheet">
+            <link rel="stylesheet" type="text/css" href="{% static "css/jquery.datetimepicker.css" %}">
             {% block extra_style %}{% endblock %}
         {% endblock %}
 
@@ -32,6 +35,11 @@
             <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
             <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
             <script src="{% static "pinax/js/theme.js" %}"></script>
+            <script src="{% static "js/jquery.js" %}"></script>
+            <script src="{% static "js/jquery.datetimepicker.js" %}"></script>
+            <script src="{% static "js/custom.js" %}"></script>
+
+
             {% block extra_script %}{% endblock %}
         {% endblock %}
 
@@ -46,9 +54,7 @@
             {% block extra_head %}{% endblock %}
         {% endblock %}
     </head>
-    <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
-        <div class="{% block wrapper_class %}{% endblock %}">
-
+    <body>
             {% block topbar_base %}
                 <header>
                     <div class="navbar navbar-default {% block navbar_class %}navbar-fixed-top{% endblock %}">
@@ -58,16 +64,18 @@
                                 <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                                     <span class="fa fa-bars"></span>
                                 </button>
-                                {% block site_brand %}<a class="navbar-brand" href="{% url "home" %}">{{ SITE_NAME }}</a>{% endblock %}
+                                {% block site_brand %}
+                                  <a class="navbar-brand" href="{% url "home" %}" style="padding:0">
+                                    <img src="{% static "images/logo.svg" %}" alt="Logo" width=50px height=auto display=inline>
+                                    {{ SITE_NAME }}
+                                  </a>
+                                {% endblock %}
                             </div>
                             <div class="collapse navbar-collapse navbar-responsive-collapse">
                                 {% block nav %}
-                                    {% comment %}
-                                        <ul class="nav">
-                                            <li><a href="#tab_one">One</a></li>
-                                            <li><a href="#tab_two">Two</a></li>
+                                        <ul class="nav navbar-nav">
+                                            <li><a href="{% url 'deals_index' %}">Deals</a></li>
                                         </ul>
-                                    {% endcomment %}
                                 {% endblock %}
                                 {% block account_bar %}{% include "_account_bar.html" %}{% endblock %}
                             </div>
@@ -78,11 +86,9 @@
             {% endblock %}
 
             {% block body_base %}
-                    <div class="container">
                         {% include "_messages.html" %}
                         {% block body %}
                         {% endblock %}
-                    </div>
             {% endblock %}
 
             {% block footer_base %}
@@ -93,7 +99,6 @@
                     </div>
                 </footer>
             {% endblock %}
-        </div>
 
 
         {% block extra_body_base %}
@@ -101,7 +106,3 @@
         {% endblock %}
     </body>
 </html>
-
-
-
-

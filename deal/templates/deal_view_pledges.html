@@ -1,0 +1,33 @@
+{% extends "profile_base.html" %}
+
+{% block content %}
+<h1>Deal: {{deal.title}}</h1> 
+<h2>Pledges: </h2>
+{% if error_message%}
+<div class="alert alert-danger" role="alert">
+  {{error_message}}
+</div>
+{% else %}
+
+   {% for p in user_profiles %}
+<div class="well">
+  <label>Username: </label> {{p.account.user.username}} <br/>
+  <label>Email: </label> {{p.account.user.email}} <br/>
+  {% for i in p.commitment_set.all%}
+    {% if i.deal.id == pk %}
+        <label>Units: </label>{{i.units}}<br/>
+        <label>Requests: </label>{{i.requests}} <br/>
+    {% endif %}
+  {% endfor %}
+</div>
+   {% endfor %}
+
+
+
+  {% if not user_profiles %}
+   <div class="alert alert-warning" role="alert">
+      Nobody has commited yet! Please check again later!
+   </div>
+  {% endif %}
+{% endif %}
+{% endblock %}
