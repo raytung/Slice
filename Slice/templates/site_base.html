@@ -48,13 +48,11 @@
             {% block extra_head %}{% endblock %}
         {% endblock %}
     </head>
-    <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
-        <div class="{% block wrapper_class %}{% endblock %}">
-
+    <body>
             {% block topbar_base %}
                 <header>
                     <div class="navbar navbar-default {% block navbar_class %}navbar-fixed-top{% endblock %}">
-                        <div class="container-fluid">
+                        <div class="container">
                         {% block topbar %}
                             <div class="navbar-header">
                                 <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -95,7 +93,6 @@
                     </div>
                 </footer>
             {% endblock %}
-        </div>
 
 
         {% block extra_body_base %}

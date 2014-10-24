@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 
 {% block body %}
+<div class="container">
  {% if error_message %}
 <div class="alert alert-danger" role="alert">
    <strong> Error: </strong>
@@ -20,24 +21,22 @@
 
 
    {% endif %}
-<div class="panel panel-default" id="account-details">
-  <div class="panel-heading">
-    <label>Deal: </label>
+  <div class="well">
+    <strong>Deal: </strong>
     <a href="{% url 'deal_detail' deal.id %}">{{deal.title}} </a> <br/>
-    <label>Short description</label>
+    <strong>Short description: </strong>
     {{deal.short_desc}} <br/>
-    <label>End date: </label>
+    <strong>End date: </strong>
     {{deal.end_date}} <br/>
-    <label>Units remained: </label>
+    <strong>Units remained: </strong>
     {{units_remained}} <br/>
-    <label>Your commitment: </label>
+    <strong>Your commitment: </strong>
     {{pledge.units}} units <br/>
-    <label>Your request: </label>
+    <strong>Your request: </strong>
     {{pledge.requests}}
   </div>
 
 
-</div>
 {% if not is_expired%}
 
    <form role="form" method="post" action="{% url 'pledge_edit' deal.id %}">
@@ -50,10 +49,11 @@
 
     {% endfor %}
     <input type="submit" value="Save" class="btn btn-default" name="save-pledge" />
-    <input type="submit" value="Delete Commitment" class="btn btn-danger" name="delete-pledge" />
+    <input type="submit" value="Cancel" class="btn btn-default" name="submit-cancel" />
+    <input type="submit" value="Delete Commitment" class="btn btn-danger" name="delete-pledge" style="float: right;" />
   </form>
   {% endif%}
  {% endif %}
-
+</div>
 
 {% endblock %}

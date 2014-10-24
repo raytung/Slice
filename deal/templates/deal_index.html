@@ -2,6 +2,9 @@
 
 {% block content %}
 
+
+<a href="{% url 'deal_create' %}"><button class="btn btn-success">Create Deal </button></a> 
+
 {% include 'sort_button.html'%}
   {% for deal in deals %}
 <div class="media">
@@ -33,7 +36,6 @@
     No deals found!
   </div>
 {% endif %}
-<a href="{% url 'deal_create' %}"><button class="btn btn-default">Create Deal </button></a>
 
 {% include "pigination.html" %}
 {% endblock %}
