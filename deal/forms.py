@@ -40,6 +40,7 @@ class CreateDealForm(BootstrapModelForm):
                   'delivery_method',
                   'min_pledge_amount',
                   'thumbnail'
+
                   ]
 
         # If you want to override the default label names
