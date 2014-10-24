@@ -5,7 +5,6 @@
 {% include 'sort_button.html'%}
 
 {% for deal in deals %}
-  {% for i in deal.commitment_set.all %}
 <div class="media">
   <a class="pull-left" href="#">
     <img class="media-object" src="/static/images/default.svg" >
@@ -23,12 +22,17 @@
       {% endif %}
 
       </h4>
-      <strong>Pledged units: </strong>{{ i.units }} <br/>
-      <strong>Your request: </strong>{{i.requests}}
+ 
+      {% for i in deal.commitment_set.all %}
+      {% if i.deal.pk == deal.pk%}
+     <strong>Pledged units: </strong>{{ i.units }} <br/>
+     <strong>Your request: </strong>{{i.requests}}
+     {% endif %}
+      {% endfor %}
     </div>
 
   </div>
-  {% endfor %}
+ 
   {% endfor %}
 
 

@@ -170,10 +170,11 @@ def myslice(request):
     queries_without_page = request.GET.copy()
     if queries_without_page.get('page', None):
         del queries_without_page['page']
-    deals = Deal.objects.filter(commitment__user_id=request.user.id)
+    deals = Deal.objects.select_related('commitment').filter(commitment__user_id=request.user.id)
     deals = get_sorted_model(request, deals)
 
     paginated_obj, last_page = get_paginator(deals, request)
+    print deals[0]
 
     context_dict = {'deals': paginated_obj,
                     'last_page': last_page,

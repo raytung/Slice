@@ -156,7 +156,7 @@ def detail(request, pk):
             elif found_deal.start_date > now:
                 error_message = "You cannot pledge yet. Please wait till the deal starts!"
             elif found_deal.min_pledge_amount > request_units:
-                error_message = "You need to pledge at least " + str(deal.min_pledge_amount) + " unit!"
+                error_message = "You need to pledge at least " + str(found_deal.min_pledge_amount) + " unit!"
             else:
                 pledge = pledge_form.save(commit=False)
                 pledge.last_modified_date= timezone.localtime(timezone.now())
@@ -221,15 +221,29 @@ def edit_deal (request, pk):
     if not request.user.is_authenticated():
         #redirect to login page
         return HttpResponseRedirect('/account/login?next=' + request.path)
+    
+    try:
+        deal_entry = Deal.objects.get(id=pk)
+    except ObjectDoesNotExist:
+        deal_entry = None
+    if not deal_entry:
+        error_message = "You do not have right to modify this deal"
+        return render(request, 'edit_deal.html', {'error_message':error_message})
 
-    deal_entry = Deal.objects.get(id=pk)
+
     if request.user.id != deal_entry.owner_id:
         error_message = "You do not have right to modify this deal"
         return render(request, 'edit_deal.html', {'error_message':error_message})
+
+    units_remained = deal.num_units
+    claimed_units = Commitment.objects.filter(deal_id=deal.id).aggregate(Sum('units'))
+    units_remained -= claimed_units['units__sum']
+
     if request.method == 'POST':
         form = EditDealForm(request.POST, request.FILES, instance=deal_entry)
 
         if form.is_valid():
+
             form.save()
             return redirect('profile_mydeals')
     else:
