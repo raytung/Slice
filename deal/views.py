@@ -235,9 +235,10 @@ def edit_deal (request, pk):
         error_message = "You do not have right to modify this deal"
         return render(request, 'edit_deal.html', {'error_message':error_message})
 
-    units_remained = deal.num_units
-    claimed_units = Commitment.objects.filter(deal_id=deal.id).aggregate(Sum('units'))
-    units_remained -= claimed_units['units__sum']
+    units_remained = deal_entry.num_units
+    claimed_units = Commitment.objects.filter(deal_id=deal_entry.id).aggregate(Sum('units'))
+    if claimed_units.get('units__sum', None):
+        units_remained -= claimed_units['units__sum']
 
     if request.method == 'POST':
         form = EditDealForm(request.POST, request.FILES, instance=deal_entry)
