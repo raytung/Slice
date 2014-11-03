@@ -1,10 +1,11 @@
-Bulk Buy
+Slice of Pie - A Bulkbuy Website designed for students
 =====================
+Slice of Pie is a group buy website that aims to provide cheap deals for and by students. 
 
-Note: If you have django-user-account and pinax-theme-bootstrap, remove them using   
 
-    sudo pip uninstall django-user-account && sudo pip uninstall pinax-theme-bootstrap
-    
+
+### Setup
+
 I have added them directly into our app for easier customization
 
 Getting Started:
@@ -60,71 +61,3 @@ Please go to `Slice/settings.py` and remove the following 2 lines.
 
 3 - Because we don't have an e-mail server, once you signed up, go to the Terminal,  copy and paste the confirmation link to your browser
 ![Screen Shot 2014-11-01 at 1.32.49 pm.png](https://bitbucket.org/repo/XGAX6y/images/3609837378-Screen%20Shot%202014-11-01%20at%201.32.49%20pm.png)
-
-
-HTML Locations
-===============
-**Note: All directories are under Slice/**
-
-#####Index page.    
-The body of the index is located in 
-/Slice/templates/homepage.html
-
-#####Footer
-/Slice/templates/_footer.html
-
-#####Navgivation bar
-This part is specifically for the RIGHT side of the Bootstrap navbar    
-/Slice/templates/_account_bar.html
-
-
-Quick Django 101
-===============
-####Basic Terms
-- A Project = Our website
-- App = a specific function of the website that can be re-used.
-  - e.g Account (provided by pinax)
-  - Deals    
-
-####Quick rundown   
-- Our project name is called `Slice`   
-- Inside our project, there's a dir called `Slice`   
-  - Everything inside this inner *Slice* directory manages everything. 
-  - Think of it as the "core" of our website
-  - Glues everything (templates, apps) together    
-  - The only part of the website that should not be re-usable   
-  - Has `settings.py`, `urls.py`, templates/, static/
-
-urls.py
-=======
-- Takes the input URL and map it to a view (html file)  
-- Maps url using regex.  
-
-templates/    
-==========
-- Where we put all our HTML files. 
-
-####Basic Commands    
-New project:   `django-admin startproject <project name>`    
-New app:    `dango-admin startapp <app name>`    
-Run the server:   `python manage.py runserver`    
-Database synchronization:     `python manage.py syncdb`     
-
-#Git Basic    
-=======
-####Branches     
-To create a new branch     
-
-      git checkout -b <new-branch-name>   
-
-To switch to another branch    
-
-      git checkout <branch-name>    
-
-To push to your branch     
-
-     git push origin <branch-name>    
-
-To update your branch to align with master    
-
-    git pull origin master
