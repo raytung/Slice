@@ -2,6 +2,8 @@ Slice of Pie - A Bulkbuy Website designed for students
 =====================
 Slice of Pie is a group buy website that aims to provide cheap deals for and by students. 
 
+http://slice-of-a-pie.herokuapp.com/ 
+
 
 
 ### Setup
